@@ -21,6 +21,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/images/popular/
     - assets/images/mala_shan.png
     - assets/images/dan_pauk.png
     - assets/images/cold_drinks.png

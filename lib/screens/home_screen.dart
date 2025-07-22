@@ -3,52 +3,19 @@ import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_provider.dart';
 import '../models/category.dart';
-import '../models/food_item.dart';
 import '../widgets/category_card.dart';
 import '../widgets/restaurant_card.dart';
 import '../widgets/food_card.dart';
 import '../widgets/search_bar.dart';
-import '../screens/search_screen.dart';
 import '../screens/restaurant_screen.dart';
-import '../services/api_service.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  String? _selectedCategory;
-  late Future<List<FoodItem>> _popularFoodsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _popularFoodsFuture = _fetchPopularFoods();
-  }
-
-  Future<List<FoodItem>> _fetchPopularFoods() async {
-    final apiService = ApiService();
-
-    final items1 = await apiService.getFoodItemsByRestaurant('1');
-    final items2 = await apiService.getFoodItemsByRestaurant('2');
-    final items3 = await apiService.getFoodItemsByRestaurant('3');
-
-    final allItems = [...items1, ...items2, ...items3];
-    allItems.sort((a, b) => b.rating.compareTo(a.rating));
-    return allItems.take(6).toList(); // Top 6 popular items
-  }
 
   @override
   Widget build(BuildContext context) {
     final restaurantProvider = Provider.of<RestaurantProvider>(context);
-    final restaurants = _selectedCategory == null
-        ? restaurantProvider.restaurants
-        : restaurantProvider.restaurants
-        .where((restaurant) => restaurant.tags.contains(_selectedCategory))
-        .toList();
+    final restaurants = restaurantProvider.restaurants;
 
     final categories = [
       Category(id: '1', name: 'Mala Shan', icon: Icons.restaurant_menu, image: 'assets/images/mala_shan.png'),
@@ -64,9 +31,42 @@ class _HomeScreenState extends State<HomeScreen> {
       {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/promo.png', 'color': Colors.blue[100]},
     ];
 
+    final popularFoods = [
+      {
+        'name': 'Burger',
+        'price': 3500.0,
+        'image': 'assets/images/popular/burger.png',
+      },
+      {
+        'name': 'Spicy Noodles',
+        'price': 3000.0,
+        'image': 'assets/images/popular/noodles.png',
+      },
+      {
+        'name': 'Pizza',
+        'price': 5000.0,
+        'image': 'assets/images/popular/pizza.png',
+      },
+      {
+        'name': 'Mala Hotpot',
+        'price': 6000.0,
+        'image': 'assets/images/popular/mala.png',
+      },
+      {
+        'name': 'Ice Cream',
+        'price': 2000.0,
+        'image': 'assets/images/popular/ice_cream.png',
+      },
+      {
+        'name': 'Milk Tea',
+        'price': 1500.0,
+        'image': 'assets/images/popular/tea.png',
+      },
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Food App'),
+        title: const Text('음식앱'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // -------------------- Promotions --------------------
+            // Promotions
             SizedBox(
               height: 150,
               child: ListView.builder(
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // -------------------- Search Bar --------------------
+            // Search Bar
             Padding(
               padding: const EdgeInsets.all(16),
               child: SearchBar(
@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // -------------------- Categories --------------------
+            // Categories
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -145,19 +145,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: categories.length,
                 itemBuilder: (ctx, index) => CategoryCard(
                   category: categories[index],
-                  isSelected: _selectedCategory == categories[index].name,
-                  onTap: () {
-                    setState(() {
-                      _selectedCategory = _selectedCategory == categories[index].name
-                          ? null
-                          : categories[index].name;
-                    });
-                  },
+                  isSelected: false,
+                  onTap: () {},
                 ),
               ),
             ),
 
-            // -------------------- ✅ Popular Foods --------------------
+            // ✅ Popular Foods
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
@@ -167,59 +161,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(
               height: 220,
-              child: FutureBuilder<List<FoodItem>>(
-                future: _popularFoodsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No popular items available'));
-                  }
-
-                  final popularFoods = snapshot.data!;
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: popularFoods.length,
-                    itemBuilder: (ctx, index) => Container(
-                      width: 160,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: FoodCard(
-                        name: popularFoods[index].name,
-                        price: popularFoods[index].discountedPrice,
-                        image: popularFoods[index].image,
-                        isPopular: true,
-                        onTap: () {
-                          final restaurant = restaurantProvider.restaurants.firstWhere(
-                                (r) => r.id == popularFoods[index].restaurantId,
-                            orElse: () => Restaurant(
-                              id: '',
-                              name: 'Unknown',
-                              image: '',
-                              rating: 0,
-                              deliveryTime: '',
-                              deliveryFee: 0,
-                              minOrder: 0,
-                              tags: [],
-                              discount: 0,
-                            ),
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => RestaurantScreen(restaurant: restaurant),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                },
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: popularFoods.length,
+                itemBuilder: (ctx, index) => Container(
+                  width: 160,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  child: FoodCard(
+                    name: popularFoods[index]['name'] as String,
+                    price: popularFoods[index]['price'] as double,
+                    image: popularFoods[index]['image'] as String,
+                    isPopular: true,
+                    onTap: () {},
+                  ),
+                ),
               ),
             ),
 
-            // -------------------- Restaurants --------------------
+            // Restaurants
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
