@@ -4,6 +4,7 @@ class Pizza {
   final String description;
   final double price;
   final String image;
+  int quantity;  // <-- Add this, make mutable to update quantity
 
   Pizza({
     required this.id,
@@ -11,5 +12,6 @@ class Pizza {
     required this.description,
     required this.price,
     required this.image,
+    this.quantity = 1, // default 1
   });
 }

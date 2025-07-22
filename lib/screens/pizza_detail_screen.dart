@@ -97,7 +97,7 @@ class _PizzaDetailScreenState extends State<PizzaDetailScreen> {
                     });
                   },
                 ),
-                Text('Apply 10% discount'),
+                Text('Apply 25% discount'),
               ],
             ),
             Spacer(),
