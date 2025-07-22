@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/restaurant_provider.dart';
 import '../models/food_item.dart';
-import '../screens/food_detail_screen.dart';
 import '../models/restaurant.dart';
+import '../screens/food_detail_screen.dart';
 import '../widgets/food_card.dart';
 import '../widgets/restaurant_card.dart';
 
@@ -14,7 +14,8 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<FoodItem> _searchResults = [];
+  String _query = '';
+  bool _isSearching = false;
 
   @override
   void dispose() {
@@ -23,9 +24,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _search(String query) {
-    final restaurantProvider = Provider.of<RestaurantProvider>(context, listen: false);
     setState(() {
-      _searchResults = restaurantProvider.searchFoodItems(query);
+      _query = query.trim();
+      _isSearching = query.isNotEmpty;
     });
   }
 
@@ -51,46 +52,71 @@ class _SearchScreenState extends State<SearchScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                filled: true,
+                fillColor: Colors.grey[100],
               ),
               onChanged: _search,
             ),
           ),
           Expanded(
-            child: _searchController.text.isEmpty
+            child: _query.isEmpty
                 ? ListView.builder(
               itemCount: restaurants.length,
-              itemBuilder: (ctx, index) => RestaurantCard(restaurant: restaurants[index]),
+              itemBuilder: (ctx, index) =>
+                  RestaurantCard(restaurant: restaurants[index]),
             )
-                : ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (ctx, index) {
-                final foodItem = _searchResults[index];
-                final restaurant = restaurants.firstWhere(
-                      (r) => r.id == foodItem.restaurantId,
-                  orElse: () => Restaurant(
-                    id: '',
-                    name: 'Unknown',
-                    image: '',
-                    rating: 0,
-                    deliveryTime: '',
-                    deliveryFee: 0,
-                    minOrder: 0,
-                    tags: [],
-                  ),
-                );
-                return FoodCard(
-                  name: foodItem.name,
-                  price: foodItem.discountedPrice,
-                  image: foodItem.image,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => FoodDetailScreen(
-                          foodItem: foodItem,
-                          restaurant: restaurant,
-                        ),
+                : FutureBuilder<List<FoodItem>>(
+              future: restaurantProvider.searchFoodItems(_query),
+              builder: (context, AsyncSnapshot<List<FoodItem>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+                final searchResults = snapshot.data ?? [];
+
+                if (searchResults.isEmpty) {
+                  return const Center(
+                    child: Text('No results found'),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: searchResults.length,
+                  itemBuilder: (ctx, index) {
+                    final foodItem = searchResults[index];
+                    final restaurant = restaurants.firstWhere(
+                          (r) => r.id == foodItem.restaurantId,
+                      orElse: () => Restaurant(
+                        id: '',
+                        name: 'Unknown',
+                        image: 'assets/images/placeholder.png',
+                        rating: 0,
+                        deliveryTime: '',
+                        deliveryFee: 0,
+                        minOrder: 0,
+                        tags: [],
+                        discount: 0,
                       ),
+                    );
+                    return FoodCard(
+                      name: foodItem.name,
+                      price: foodItem.discountedPrice,
+                      image: foodItem.image,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FoodDetailScreen(
+                              foodItem: foodItem,
+                              restaurant: restaurant,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                 );

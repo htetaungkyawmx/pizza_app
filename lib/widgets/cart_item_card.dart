@@ -31,6 +31,12 @@ class CartItemCard extends StatelessWidget {
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.image_not_supported, size: 30),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -40,17 +46,17 @@ class CartItemCard extends StatelessWidget {
                     children: [
                       Text(
                         item.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       if (item.selectedSize != null)
                         Text(
                           'Size: ${item.selectedSize}',
-                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                         ),
                       if (item.selectedAddons.isNotEmpty)
                         Text(
                           'Addons: ${item.selectedAddons.join(", ")}',
-                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                         ),
                     ],
                   ),
@@ -82,7 +88,7 @@ class CartItemCard extends StatelessWidget {
                 ),
                 Text(
                   '\$${item.totalPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -91,13 +97,13 @@ class CartItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Divider(),
-                  const Text(
+                  Text(
                     'Special Instructions:',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                   ),
                   Text(
                     item.specialInstructions,
-                    style: const TextStyle(fontSize: 12),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),

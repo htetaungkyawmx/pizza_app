@@ -2,108 +2,94 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/cart_item_card.dart';
-import 'checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final cartItems = cartProvider.items;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Cart')),
-      body: Column(
-        children: [
-          if (cartProvider.restaurant != null)
-            ListTile(
-              leading: const Icon(Icons.restaurant),
-              title: Text(cartProvider.restaurant!.name),
-              subtitle: Text(cartProvider.restaurant!.deliveryTime),
-            ),
-          Expanded(
-            child: cartProvider.items.isEmpty
-                ? const Center(child: Text('Your cart is empty'))
-                : ListView.builder(
-              itemCount: cartProvider.items.length,
-              itemBuilder: (ctx, index) {
-                final item = cartProvider.items[index];
-                return CartItemCard(
-                  item: item,
-                  onRemove: () => cartProvider.removeFromCart(item.id),
-                  onQuantityChanged: (newQuantity) {
-                    cartProvider.updateQuantity(item.id, newQuantity);
-                  },
-                );
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey.shade300)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Subtotal'),
-                    Text('\$${cartProvider.subtotal.toStringAsFixed(2)}'),
-                  ],
+      appBar: AppBar(
+        title: const Text('Your Cart'),
+      ),
+      body: cartItems.isEmpty
+          ? const Center(child: Text('Your cart is empty'))
+          : FutureBuilder<List<double>>(
+        future: Future.wait([
+          cartProvider.subtotal,
+          cartProvider.deliveryFee,
+          cartProvider.total,
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error loading cart data'));
+          }
+          final data = snapshot.data ?? [0.0, 0.0, 0.0];
+          final subtotal = data[0];
+          final deliveryFee = data[1];
+          final total = data[2];
+
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: cartItems.length,
+                  itemBuilder: (ctx, index) => CartItemCard(
+                    item: cartItems[index],
+                    onRemove: () {
+                      cartProvider.removeItem(cartItems[index].id);
+                    },
+                    onQuantityChanged: (newQuantity) {
+                      cartProvider.updateQuantity(cartItems[index].id, newQuantity);
+                    },
+                  ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Delivery Fee'),
-                    Text('\$${cartProvider.deliveryFee.toStringAsFixed(2)}'),
-                  ],
-                ),
-                const Divider(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(),
                     Text(
-                      '\$${cartProvider.total.toStringAsFixed(2)}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Text(
+                      'Delivery Fee: \$${deliveryFee.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    if (cartProvider.totalDiscount > 0)
+                      Text(
+                        'Discount: ${cartProvider.totalDiscount}% OFF',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                      ),
+                    Text(
+                      'Total: \$${total.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        cartProvider.placeOrder();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Order placed!')),
+                        );
+                      },
+                      child: const Text('Place Order'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 48),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: cartProvider.items.isEmpty
-                        ? null
-                        : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CheckoutScreen(
-                            restaurant: cartProvider.restaurant!,
-                            items: cartProvider.items,
-                            subtotal: cartProvider.subtotal,
-                            deliveryFee: cartProvider.deliveryFee,
-                            total: cartProvider.total,
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Proceed to Checkout'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

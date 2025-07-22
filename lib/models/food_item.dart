@@ -1,37 +1,32 @@
-enum FoodType { pizza, burger, snack, drink, dessert, asian, other }
+import 'package:flutter/material.dart';
+import 'food_type.dart';
 
 class FoodItem {
   final String id;
   final String name;
-  final String description;
+  final String? description;
   final double price;
   final String image;
   final FoodType type;
   final String restaurantId;
-  final List<String>? tags;
-  final List<String>? addons;
-  final List<String>? sizes;
-  final double? discount;
+  final List<String> sizes;
+  final List<String> addons;
   final bool isVeg;
-  final bool isSpicy;
-  final int? preparationTime;
+  final double discount;
 
   FoodItem({
     required this.id,
     required this.name,
-    required this.description,
+    this.description,
     required this.price,
     required this.image,
     required this.type,
     required this.restaurantId,
-    this.tags,
-    this.addons,
-    this.sizes,
-    this.discount,
-    this.isVeg = false,
-    this.isSpicy = false,
-    this.preparationTime,
+    required this.sizes,
+    required this.addons,
+    required this.isVeg,
+    this.discount = 0,
   });
 
-  double get discountedPrice => discount != null ? price * (1 - discount!) : price;
+  double get discountedPrice => price * (1 - discount);
 }

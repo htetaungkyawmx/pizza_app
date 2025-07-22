@@ -160,9 +160,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         restaurantName: restaurant.name,
                         items: items,
                         orderTime: DateTime.now(),
-                        subtotal: cartProvider.subtotal,
-                        deliveryFee: cartProvider.deliveryFee,
-                        total: cartProvider.total,
+                        subtotal: await cartProvider.subtotal,
+                        deliveryFee: await cartProvider.deliveryFee,
+                        total: await cartProvider.total,
                         deliveryAddress: _addressController.text,
                         paymentMethod: _paymentMethod,
                       );
@@ -194,4 +194,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
     );
   }
+}
+
+extension on Future<Restaurant?> {
+  get name => null;
+
+  get id => null;
+}
+
+extension on Future<double> {
+  toStringAsFixed(int i) {}
 }

@@ -9,215 +9,153 @@ class FoodDetailScreen extends StatefulWidget {
   final FoodItem foodItem;
   final Restaurant restaurant;
 
-  const FoodDetailScreen({
-    super.key,
-    required this.foodItem,
-    required this.restaurant,
-  });
+  const FoodDetailScreen({required this.foodItem, required this.restaurant});
 
   @override
-  State<FoodDetailScreen> createState() => _FoodDetailScreenState();
+  _FoodDetailScreenState createState() => _FoodDetailScreenState();
 }
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
-  int _quantity = 1;
   String? _selectedSize;
-  final List<String> _selectedAddons = [];
-  final TextEditingController _specialInstructionsController = TextEditingController();
+  List<String> _selectedAddons = [];
+  final TextEditingController _instructionsController = TextEditingController();
+  int _quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedSize = widget.foodItem.sizes.isNotEmpty ? widget.foodItem.sizes[0] : null;
+  }
 
   @override
   void dispose() {
-    _specialInstructionsController.dispose();
+    _instructionsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);
-    final theme = Theme.of(context);
-
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.foodItem.name),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(widget.foodItem.name)),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                widget.foodItem.image,
-                width: double.infinity,
-                height: 250,
-                fit: BoxFit.cover,
-              ),
+            Image.asset(
+              widget.foodItem.image,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20),
-            Text(
-              widget.foodItem.name,
-              style: theme.textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(widget.foodItem.description, style: theme.textTheme.bodyMedium),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  '\$${widget.foodItem.discountedPrice.toStringAsFixed(2)}',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: theme.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (widget.foodItem.discount != null) ...[
-                  const SizedBox(width: 10),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    '\$${widget.foodItem.price.toStringAsFixed(2)}',
-                    style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey),
+                    widget.foodItem.name,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent, // Fixed styling
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      '${(widget.foodItem.discount! * 100).toInt()}% OFF',
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                    ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.foodItem.description ?? 'No description',
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                ],
-              ],
-            ),
-            if (widget.foodItem.sizes != null && widget.foodItem.sizes!.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              Text('Choose Size', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 10,
-                children: widget.foodItem.sizes!.map((size) {
-                  return ChoiceChip(
-                    label: Text(size),
-                    selected: _selectedSize == size,
-                    selectedColor: theme.primaryColor.withOpacity(0.2),
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedSize = selected ? size : null;
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ],
-            if (widget.foodItem.addons != null && widget.foodItem.addons!.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              Text('Add Extras (+ \$0.50 each)', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 10,
-                children: widget.foodItem.addons!.map((addon) {
-                  return FilterChip(
-                    label: Text(addon),
-                    selected: _selectedAddons.contains(addon),
-                    selectedColor: theme.primaryColor.withOpacity(0.2),
-                    onSelected: (selected) {
-                      setState(() {
-                        selected ? _selectedAddons.add(addon) : _selectedAddons.remove(addon);
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ],
-            const SizedBox(height: 24),
-            Text('Special Instructions', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _specialInstructionsController,
-              decoration: const InputDecoration(
-                hintText: 'Any special requests?',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Text('Quantity', style: theme.textTheme.titleMedium),
-                const Spacer(),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove_circle_outline),
-                      onPressed: () => setState(() => _quantity > 1 ? _quantity-- : _quantity),
+                  const SizedBox(height: 8),
+                  Text(
+                    '\$${widget.foodItem.discountedPrice.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.red),
+                  ),
+                  if (widget.foodItem.discount > 0)
+                    Text(
+                      '(${widget.foodItem.discount * 100}% OFF)',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
                     ),
-                    Text('$_quantity', style: theme.textTheme.titleLarge),
-                    IconButton(
-                      icon: const Icon(Icons.add_circle_outline),
-                      onPressed: () => setState(() => _quantity++),
+                  const SizedBox(height: 16),
+                  if (widget.foodItem.sizes.isNotEmpty) ...[
+                    const Text('Size', style: TextStyle(fontWeight: FontWeight.bold)),
+                    DropdownButton<String>(
+                      value: _selectedSize,
+                      items: widget.foodItem.sizes
+                          .map((size) => DropdownMenuItem(value: size, child: Text(size)))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSize = value;
+                        });
+                      },
                     ),
                   ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 10,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Total', style: TextStyle(color: Colors.grey)),
-                  Text(
-                    '\$${(widget.foodItem.discountedPrice * _quantity + _selectedAddons.length * 0.5 * _quantity).toStringAsFixed(2)}',
-                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  if (widget.foodItem.addons.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    const Text('Add-ons', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ...widget.foodItem.addons.map((addon) => CheckboxListTile(
+                      title: Text(addon),
+                      value: _selectedAddons.contains(addon),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedAddons.add(addon);
+                          } else {
+                            _selectedAddons.remove(addon);
+                          }
+                        });
+                      },
+                    )),
+                  ],
+                  const SizedBox(height: 16),
+                  const Text('Special Instructions', style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextField(
+                    controller: _instructionsController,
+                    decoration: const InputDecoration(
+                      hintText: 'E.g., No onions',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () {
+                          if (_quantity > 1) setState(() => _quantity--);
+                        },
+                      ),
+                      Text('$_quantity'),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () => setState(() => _quantity++),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      cartProvider.addItem(CartItem(
+                        id: widget.foodItem.id,
+                        name: widget.foodItem.name,
+                        price: widget.foodItem.discountedPrice,
+                        image: widget.foodItem.image,
+                        quantity: _quantity,
+                        selectedSize: _selectedSize,
+                        selectedAddons: _selectedAddons,
+                        specialInstructions: _instructionsController.text, restaurantId: '',
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${widget.foodItem.name} added to cart')),
+                      );
+                    },
+                    child: const Text('Add to Cart'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
                   ),
                 ],
               ),
-              const Spacer(),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.add_shopping_cart),
-                label: const Text('Add to Cart'),
-                onPressed: () {
-                  if (widget.foodItem.sizes != null &&
-                      widget.foodItem.sizes!.isNotEmpty &&
-                      _selectedSize == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please select a size')),
-                    );
-                    return;
-                  }
-
-                  final cartItem = CartItem(
-                    foodItemId: widget.foodItem.id,
-                    name: widget.foodItem.name,
-                    image: widget.foodItem.image,
-                    price: widget.foodItem.discountedPrice,
-                    selectedSize: _selectedSize,
-                    selectedAddons: List.from(_selectedAddons),
-                    quantity: _quantity,
-                    specialInstructions: _specialInstructionsController.text,
-                  );
-
-                  cartProvider.addToCart(cartItem, widget.restaurant);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Added to cart!')),
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

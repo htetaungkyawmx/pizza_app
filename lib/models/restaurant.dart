@@ -6,6 +6,7 @@ class Restaurant {
   final double rating;
   final String deliveryTime;
   final double deliveryFee;
+  final double discount;
   final double minOrder;
   final List<String> tags;
 
@@ -17,6 +18,7 @@ class Restaurant {
     required this.rating,
     required this.deliveryTime,
     required this.deliveryFee,
+    required this.discount,
     required this.minOrder,
     required this.tags,
   });

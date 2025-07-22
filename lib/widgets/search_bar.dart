@@ -10,7 +10,7 @@ class SearchBar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: TextField(
-        enabled: false, // Disable direct input, navigate to SearchScreen
+        enabled: false,
         decoration: InputDecoration(
           hintText: 'Search for restaurants or food',
           prefixIcon: const Icon(Icons.search),

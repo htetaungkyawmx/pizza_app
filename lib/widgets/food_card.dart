@@ -4,31 +4,51 @@ class FoodCard extends StatelessWidget {
   final String name;
   final double price;
   final String image;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   const FoodCard({
-    super.key,
     required this.name,
     required this.price,
     required this.image,
-    this.onTap,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Row(
           children: [
-            Image.asset(image, width: 100, height: 100, fit: BoxFit.cover),
-            const SizedBox(width: 16),
+            Image.asset(
+              image,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 80,
+                height: 80,
+                color: Colors.grey[300],
+                child: const Icon(Icons.image_not_supported, size: 40),
+              ),
+            ),
+            const SizedBox(width: 12),
             Expanded(
-              child: ListTile(
-                title: Text(name),
-                subtitle: Text('\$${price.toStringAsFixed(2)}'),
-                trailing: const Icon(Icons.add_shopping_cart),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '\$${price.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                  ),
+                ],
               ),
             ),
           ],

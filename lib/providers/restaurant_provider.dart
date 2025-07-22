@@ -1,36 +1,51 @@
-import 'package:flutter/foundation.dart';
-import '../models/food_item.dart';
+import 'package:flutter/material.dart';
 import '../models/restaurant.dart';
+import '../models/food_item.dart';
 import '../services/api_service.dart';
 
 class RestaurantProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
   List<Restaurant> _restaurants = [];
-  List<FoodItem> _foodItems = [];
 
-  RestaurantProvider() {
-    _fetchData();
-  }
+  List<Restaurant> get restaurants => _restaurants;
 
-  List<Restaurant> get restaurants => [..._restaurants];
-
-  Future<void> _fetchData() async {
-    _restaurants = await _apiService.getRestaurants();
-    _foodItems = await _apiService.getFoodItemsByRestaurant('1'); // Fetch for default restaurant
+  Future<void> fetchRestaurants() async {
+    _restaurants = await ApiService().getRestaurants();
     notifyListeners();
   }
 
-  List<FoodItem> getFoodItemsByRestaurant(String restaurantId) {
-    return _foodItems.where((item) => item.restaurantId == restaurantId).toList();
-  }
+  Future<List<FoodItem>> searchFoodItems(String query) async {
+    if (query.isEmpty) return [];
 
-  List<FoodItem> getFoodItemsByCategory(FoodType category) {
-    return _foodItems.where((item) => item.type == category).toList();
-  }
+    try {
+      final items1 = await ApiService().getFoodItemsByRestaurant('1');
+      final items2 = await ApiService().getFoodItemsByRestaurant('2');
+      final items3 = await ApiService().getFoodItemsByRestaurant('3');
 
-  List<FoodItem> searchFoodItems(String query) {
-    return _foodItems.where((item) =>
-    item.name.toLowerCase().contains(query.toLowerCase()) ||
-        item.description.toLowerCase().contains(query.toLowerCase())).toList();
+      final allItems = [...items1, ...items2, ...items3];
+
+      return allItems.where((item) {
+        final itemNameMatches = item.name.toLowerCase().contains(query.toLowerCase());
+        final restaurant = _restaurants.firstWhere(
+              (r) => r.id == item.restaurantId,
+          orElse: () => Restaurant(
+            id: '',
+            name: '',
+            image: 'assets/images/placeholder.png',
+            rating: 0,
+            deliveryTime: '',
+            deliveryFee: 0,
+            minOrder: 0,
+            tags: [],
+            discount: 0,
+          ),
+        );
+        final restaurantNameMatches = restaurant.name.toLowerCase().contains(query.toLowerCase());
+
+        return itemNameMatches || restaurantNameMatches;
+      }).toList();
+    } catch (e) {
+      debugPrint('Error searching food items: $e');
+      return [];
+    }
   }
 }

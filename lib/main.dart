@@ -6,6 +6,8 @@ import 'providers/user_provider.dart';
 import 'screens/main_wrapper.dart';
 import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/cart_screen.dart';
+import 'screens/search_screen.dart';
 
 void main() {
   runApp(PizzaApp());
@@ -21,7 +23,7 @@ class PizzaApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
-        title: 'PizzaApp',
+        title: 'FoodieApp',
         theme: ThemeData(
           primarySwatch: Colors.red,
           scaffoldBackgroundColor: Colors.white,
@@ -40,12 +42,12 @@ class PizzaApp extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
           ),
-          // cardTheme: const CardTheme( // Explicitly using CardTheme for Flutter >=3.7.0
-          //   elevation: 2,
-          //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          //   margin: EdgeInsets.all(0),
-          //   clipBehavior: Clip.antiAlias, // Added for smoother card edges
-          // ),
+          cardTheme: CardThemeData(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: EdgeInsets.all(0),
+            clipBehavior: Clip.antiAlias,
+          ),
           appBarTheme: const AppBarTheme(
             elevation: 0,
             centerTitle: true,
@@ -56,13 +58,15 @@ class PizzaApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           colorScheme: ColorScheme.fromSwatch(
             primarySwatch: Colors.red,
-            accentColor: Colors.redAccent, // GrabFood-inspired accent
+            accentColor: Colors.redAccent,
           ).copyWith(secondary: Colors.redAccent),
         ),
         home: MainWrapper(),
         routes: {
           '/home': (ctx) => HomeScreen(),
           '/profile': (ctx) => ProfileScreen(),
+          '/cart': (ctx) => CartScreen(),
+          '/search': (ctx) => SearchScreen(),
         },
       ),
     );

@@ -26,29 +26,32 @@ class _HomeScreenState extends State<HomeScreen> {
         .where((restaurant) => restaurant.tags.contains(_selectedCategory))
         .toList();
     final categories = [
-      Category(id: '1', name: 'Pizza', icon: Icons.local_pizza),
-      Category(id: '2', name: 'Burger', icon: Icons.fastfood),
-      Category(id: '3', name: 'Snack', icon: Icons.fastfood),
-      Category(id: '4', name: 'Drink', icon: Icons.local_drink),
-      Category(id: '5', name: 'Dessert', icon: Icons.cake),
+      Category(id: '1', name: 'Mala Shan', icon: Icons.restaurant_menu, image: 'assets/images/mala_shan.png'),
+      Category(id: '2', name: 'Dan Pauk', icon: Icons.rice_bowl, image: 'assets/images/dan_pauk.png'),
+      Category(id: '3', name: 'Cold Drinks', icon: Icons.local_drink, image: 'assets/images/cold_drinks.png'),
+      Category(id: '4', name: 'Pizza', icon: Icons.local_pizza, image: 'assets/images/pizza.png'),
+      Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/dessert.png'),
     ];
     final promotions = [
-      {'text': 'Get 20% off your first order!', 'color': Colors.red[100]},
-      {'text': 'Free delivery on orders over \$20!', 'color': Colors.orange[100]},
-      {'text': 'Buy 1 Get 1 Free on Pizzas!', 'color': Colors.green[100]},
+      {'text': '30% OFF Mala Shan dishes!', 'image': 'assets/images/promo.png', 'color': Colors.red[100]},
+      {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
+      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/promo.png', 'color': Colors.blue[100]},
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PizzaApp'),
+        title: const Text('음식 앱'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => SearchScreen()),
-              );
+              Navigator.pushNamed(context, '/search');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.pushNamed(context, '/cart');
             },
           ),
         ],
@@ -57,9 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Promotions carousel
             SizedBox(
-              height: 120,
+              height: 150,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: promotions.length,
@@ -68,12 +70,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: promotions[index]['color'] as Color?,
+                    image: DecorationImage(
+                      image: AssetImage(promotions[index]['image'] as String),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.3),
+                        BlendMode.darken,
+                      ),
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       promotions[index]['text'] as String,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.red),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
@@ -83,10 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16),
               child: SearchBar(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => SearchScreen()),
-                  );
+                  Navigator.pushNamed(context, '/search');
                 },
               ),
             ),

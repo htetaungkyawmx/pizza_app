@@ -1,74 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
-import '../providers/restaurant_provider.dart';
-import 'food_menu_screen.dart';
+import '../models/food_item.dart';
+import '../providers/cart_provider.dart';
+import '../services/api_service.dart';
+import '../widgets/food_card.dart';
+import 'food_detail_screen.dart';
 
 class RestaurantScreen extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantScreen({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantScreen({required this.restaurant});
 
   @override
   Widget build(BuildContext context) {
-    final restaurantProvider = Provider.of<RestaurantProvider>(context);
-    final foodItems = restaurantProvider.getFoodItemsByRestaurant(restaurant.id);
-
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(restaurant.name),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Menu'),
-              Tab(text: 'Info'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            FoodMenuScreen(
-              foodItems: foodItems,
-              restaurant: restaurant,
+    final apiService = ApiService();
+    return Scaffold(
+      appBar: AppBar(title: Text(restaurant.name)),
+      body: FutureBuilder<List<FoodItem>>(
+        future: apiService.getFoodItemsByRestaurant(restaurant.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No items available'));
+          }
+          final foodItems = snapshot.data!;
+          return ListView.builder(
+            itemCount: foodItems.length,
+            itemBuilder: (ctx, index) => FoodCard(
+              name: foodItems[index].name,
+              price: foodItems[index].discountedPrice,
+              image: foodItems[index].image,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FoodDetailScreen(
+                      foodItem: foodItems[index],
+                      restaurant: restaurant,
+                    ),
+                  ),
+                );
+              },
             ),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'About',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(restaurant.description ?? 'No description available.'),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Details',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  ListTile(
-                    leading: const Icon(Icons.timer),
-                    title: const Text('Delivery Time'),
-                    subtitle: Text(restaurant.deliveryTime),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.delivery_dining),
-                    title: const Text('Delivery Fee'),
-                    subtitle: Text('\$${restaurant.deliveryFee.toStringAsFixed(2)}'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.attach_money),
-                    title: const Text('Minimum Order'),
-                    subtitle: Text('\$${restaurant.minOrder.toStringAsFixed(2)}'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

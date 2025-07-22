@@ -24,7 +24,6 @@ class RestaurantCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Larger image for GrabFood-style visual appeal
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.asset(
@@ -74,9 +73,31 @@ class RestaurantCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '\$${restaurant.deliveryFee.toStringAsFixed(2)} delivery',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                  Row(
+                    children: [
+                      Text(
+                        '\$${restaurant.deliveryFee.toStringAsFixed(2)} delivery',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
+                      ),
+                      if (restaurant.discount > 0) ...[
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.red[100],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${restaurant.discount}% OFF',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ],
               ),

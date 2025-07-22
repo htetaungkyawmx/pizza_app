@@ -1,0 +1,1 @@
+enum FoodType { mala_shan, dan_pauk, cold_drinks, pizza, burger }

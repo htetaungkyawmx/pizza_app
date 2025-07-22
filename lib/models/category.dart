@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Category {
   final String id;
@@ -6,10 +6,5 @@ class Category {
   final IconData icon;
   final String? image;
 
-  Category({
-    required this.id,
-    required this.name,
-    required this.icon,
-    this.image,
-  });
+  Category({required this.id, required this.name, required this.icon, this.image});
 }

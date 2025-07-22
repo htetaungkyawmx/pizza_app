@@ -25,19 +25,15 @@ class CategoryCard extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).primaryColor.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(32),
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: AssetImage(category.image ?? 'assets/images/placeholder.png'),
+                  fit: BoxFit.cover,
+                ),
                 border: Border.all(
                   color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
                   width: 2,
                 ),
-              ),
-              child: Icon(
-                category.icon,
-                size: 32,
-                color: isSelected ? Colors.white : Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 8),
