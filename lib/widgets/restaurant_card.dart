@@ -1,68 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
-import '../providers/restaurant_provider.dart';
-import '../screens/food_menu_screen.dart';
+import '../screens/restaurant_screen.dart';
 
-class RestaurantScreen extends StatelessWidget {
+class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantScreen({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final restaurantProvider = Provider.of<RestaurantProvider>(context);
-    final foodItems = restaurantProvider.getFoodItemsByRestaurant(restaurant.id);
-
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(restaurant.name),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Menu'),
-              Tab(text: 'Info'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            FoodMenuScreen(
-              foodItems: foodItems,
-              restaurant: restaurant,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => RestaurantScreen(restaurant: restaurant),
             ),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Larger image for GrabFood-style visual appeal
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.asset(
+                restaurant.image,
+                width: double.infinity,
+                height: 150,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 150,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.image_not_supported, size: 50),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'About',
+                    restaurant.name,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
-                  Text(restaurant.description ?? 'No description available.'),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 4),
                   Text(
-                    'Details',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    restaurant.description ?? 'No description',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  ListTile(
-                    leading: const Icon(Icons.timer),
-                    title: const Text('Delivery Time'),
-                    subtitle: Text(restaurant.deliveryTime),
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.yellow[700], size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        restaurant.rating.toStringAsFixed(1),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        restaurant.deliveryTime,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.delivery_dining),
-                    title: const Text('Delivery Fee'),
-                    subtitle: Text('\$${restaurant.deliveryFee.toStringAsFixed(2)}'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.attach_money),
-                    title: const Text('Minimum Order'),
-                    subtitle: Text('\$${restaurant.minOrder.toStringAsFixed(2)}'),
+                  const SizedBox(height: 4),
+                  Text(
+                    '\$${restaurant.deliveryFee.toStringAsFixed(2)} delivery',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.red),
                   ),
                 ],
               ),

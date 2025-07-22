@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pizza_app/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
-
-import '../providers/cart_provider.dart' as cartProvider;
-import '../providers/restaurant_provider.dart' as restProvider;
-import '../providers/user_provider.dart' as userProvider;
-import 'home_screen.dart';
+import '../providers/cart_provider.dart';
+import '../providers/restaurant_provider.dart';
+import '../providers/user_provider.dart';
+import '../screens/home_screen.dart';
+import '../screens/search_screen.dart';
+import '../screens/cart_screen.dart';
+import '../screens/profile_screen.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class MainWrapper extends StatefulWidget {
   @override
@@ -20,30 +21,23 @@ class _MainWrapperState extends State<MainWrapper> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => cartProvider.CartProvider()),
-        ChangeNotifierProvider(create: (_) => restProvider.RestaurantProvider()),
-        ChangeNotifierProvider(create: (_) => userProvider.UserProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => RestaurantProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Scaffold(
         body: IndexedStack(
           index: _currentIndex,
           children: [
             HomeScreen(),
-            Center(child: Text('Search Screen')),
-            Center(child: Text('Cart Screen')),
+            SearchScreen(),
+            CartScreen(),
             ProfileScreen(),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: BottomNavBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
         ),
       ),
     );

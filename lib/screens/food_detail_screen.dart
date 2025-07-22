@@ -9,7 +9,11 @@ class FoodDetailScreen extends StatefulWidget {
   final FoodItem foodItem;
   final Restaurant restaurant;
 
-  const FoodDetailScreen({super.key, required this.foodItem, required this.restaurant});
+  const FoodDetailScreen({
+    super.key,
+    required this.foodItem,
+    required this.restaurant,
+  });
 
   @override
   State<FoodDetailScreen> createState() => _FoodDetailScreenState();
@@ -30,29 +34,46 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.foodItem.name)),
+      appBar: AppBar(
+        title: Text(widget.foodItem.name),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(widget.foodItem.image, width: double.infinity, height: 250, fit: BoxFit.cover),
-            const SizedBox(height: 16),
-            Text(widget.foodItem.name, style: Theme.of(context).textTheme.titleLarge),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                widget.foodItem.image,
+                width: double.infinity,
+                height: 250,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              widget.foodItem.name,
+              style: theme.textTheme.headlineSmall,
+            ),
             const SizedBox(height: 8),
-            Text(widget.foodItem.description),
+            Text(widget.foodItem.description, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 16),
-
             Row(
               children: [
                 Text(
                   '\$${widget.foodItem.discountedPrice.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).primaryColor),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 if (widget.foodItem.discount != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Text(
                     '\$${widget.foodItem.price.toStringAsFixed(2)}',
                     style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.grey),
@@ -61,7 +82,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.redAccent,
+                      color: Colors.redAccent, // Fixed styling
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -69,20 +90,20 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
-                ]
+                ],
               ],
             ),
-
             if (widget.foodItem.sizes != null && widget.foodItem.sizes!.isNotEmpty) ...[
               const SizedBox(height: 24),
-              Text('Choose Size', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
+              Text('Choose Size', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 10),
               Wrap(
-                spacing: 8,
+                spacing: 10,
                 children: widget.foodItem.sizes!.map((size) {
                   return ChoiceChip(
                     label: Text(size),
                     selected: _selectedSize == size,
+                    selectedColor: theme.primaryColor.withOpacity(0.2),
                     onSelected: (selected) {
                       setState(() {
                         _selectedSize = selected ? size : null;
@@ -92,33 +113,28 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 }).toList(),
               ),
             ],
-
             if (widget.foodItem.addons != null && widget.foodItem.addons!.isNotEmpty) ...[
               const SizedBox(height: 24),
-              Text('Add Extra (+ \$0.50 each)', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
+              Text('Add Extras (+ \$0.50 each)', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 10),
               Wrap(
-                spacing: 8,
+                spacing: 10,
                 children: widget.foodItem.addons!.map((addon) {
                   return FilterChip(
                     label: Text(addon),
                     selected: _selectedAddons.contains(addon),
+                    selectedColor: theme.primaryColor.withOpacity(0.2),
                     onSelected: (selected) {
                       setState(() {
-                        if (selected) {
-                          _selectedAddons.add(addon);
-                        } else {
-                          _selectedAddons.remove(addon);
-                        }
+                        selected ? _selectedAddons.add(addon) : _selectedAddons.remove(addon);
                       });
                     },
                   );
                 }).toList(),
               ),
             ],
-
             const SizedBox(height: 24),
-            Text('Special Instructions', style: Theme.of(context).textTheme.titleMedium),
+            Text('Special Instructions', style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             TextField(
               controller: _specialInstructionsController,
@@ -128,23 +144,20 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               ),
               maxLines: 2,
             ),
-
             const SizedBox(height: 24),
             Row(
               children: [
-                Text('Quantity', style: Theme.of(context).textTheme.titleMedium),
+                Text('Quantity', style: theme.textTheme.titleMedium),
                 const Spacer(),
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        if (_quantity > 1) setState(() => _quantity--);
-                      },
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () => setState(() => _quantity > 1 ? _quantity-- : _quantity),
                     ),
-                    Text('$_quantity', style: Theme.of(context).textTheme.titleMedium),
+                    Text('$_quantity', style: theme.textTheme.titleLarge),
                     IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.add_circle_outline),
                       onPressed: () => setState(() => _quantity++),
                     ),
                   ],
@@ -155,6 +168,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        elevation: 10,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -166,7 +180,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   const Text('Total', style: TextStyle(color: Colors.grey)),
                   Text(
                     '\$${(widget.foodItem.discountedPrice * _quantity + _selectedAddons.length * 0.5 * _quantity).toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -174,9 +188,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               ElevatedButton.icon(
                 icon: const Icon(Icons.add_shopping_cart),
                 label: const Text('Add to Cart'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
                 onPressed: () {
                   if (widget.foodItem.sizes != null &&
                       widget.foodItem.sizes!.isNotEmpty &&
@@ -188,7 +199,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   }
 
                   final cartItem = CartItem(
-                    id: DateTime.now().toIso8601String(),
                     foodItemId: widget.foodItem.id,
                     name: widget.foodItem.name,
                     image: widget.foodItem.image,

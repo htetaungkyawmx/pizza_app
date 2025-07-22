@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class CartItem {
   final String id;
   final String foodItemId;
@@ -10,7 +12,7 @@ class CartItem {
   final String specialInstructions;
 
   CartItem({
-    required this.id,
+    String? id,
     required this.foodItemId,
     required this.name,
     required this.image,
@@ -19,10 +21,9 @@ class CartItem {
     this.selectedAddons = const [],
     required this.quantity,
     this.specialInstructions = '',
-  });
+  }) : id = id ?? const Uuid().v4();
 
   double get totalPrice {
-    // Assuming each addon adds $0.50
     double addonCost = selectedAddons.length * 0.5;
     return (price + addonCost) * quantity;
   }
