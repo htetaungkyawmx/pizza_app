@@ -1,99 +1,44 @@
 import 'package:flutter/material.dart';
-import '../models/pizza.dart';
-import '../widgets/pizza_card.dart';
-import 'cart_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/restaurant_provider.dart';
+import 'food_menu_screen.dart';
+import '../models/restaurant.dart';
 
 class HomeScreen extends StatelessWidget {
-  final List<Pizza> pizzas = [
-    Pizza(
-      id: '1',
-      name: 'Margherita',
-      description: 'Classic delight with 100% real mozzarella cheese.',
-      price: 6.0,
-      image: 'assets/images/1.png',
-    ),
-    Pizza(
-      id: '2',
-      name: 'Pepperoni',
-      description: 'Pepperoni and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/2.png',
-    ),
-    Pizza(
-      id: '3',
-      name: 'BBQ Chicken Deluxe',
-      description: 'BBQ and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/3.png',
-    ),
-    Pizza(
-      id: '4',
-      name: 'Veggie Supreme',
-      description: 'Veggie Supreme and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/4.png',
-    ),
-    Pizza(
-      id: '5',
-      name: 'Hawaiian Paradise',
-      description: 'Hawaiian Paradise and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/5.png',
-    ),
-    Pizza(
-      id: '6',
-      name: 'Four Cheese Classic',
-      description: 'Four Cheese Classic and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/6.png',
-    ),
-    Pizza(
-      id: '7',
-      name: 'Meat Lovers',
-      description: 'Meat Lovers and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/7.png',
-    ),
-    Pizza(
-      id: '8',
-      name: 'Spicy Italian',
-      description: 'Spicy Italian and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/8.png',
-    ),
-    /*Pizza(
-      id: '9',
-      name: 'Mushroom Truffle',
-      description: 'Mushroom Truffle and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/9.png',
-    ),
-    Pizza(
-      id: '10',
-      name: 'Mediterranean Delight',
-      description: 'Mediterranean Delight and cheese – a timeless combo.',
-      price: 8.5,
-      image: 'assets/images/10.png',
-    ),*/
-  ];
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final restaurantProvider = Provider.of<RestaurantProvider>(context);
+    final restaurants = restaurantProvider.restaurants;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pizza Menu'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () =>
-                Navigator.push(context, MaterialPageRoute(builder: (_) => CartScreen())),
-          )
-        ],
+        title: const Text('Welcome to Pizza App'),
       ),
       body: ListView.builder(
-        itemCount: pizzas.length,
-        itemBuilder: (context, index) {
-          return PizzaCard(pizza: pizzas[index]);
+        itemCount: restaurants.length,
+        itemBuilder: (ctx, index) {
+          final restaurant = restaurants[index];
+          return ListTile(
+            leading: Image.asset(
+              restaurant.image,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+            title: Text(restaurant.name),
+            subtitle: Text(restaurant.description ?? ''),
+            onTap: () {
+              final foodItems = restaurantProvider.getFoodItemsByRestaurant(restaurant.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FoodMenuScreen(foodItems: foodItems, restaurant: restaurant),
+                ),
+              );
+            },
+          );
         },
       ),
     );
