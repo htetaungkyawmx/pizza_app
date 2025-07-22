@@ -29,4 +29,6 @@ class FoodItem {
   });
 
   double get discountedPrice => price * (1 - discount);
+
+  get rating => null;
 }
