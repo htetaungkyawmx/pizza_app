@@ -24,6 +24,24 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
+  final Map<String, List<Map<String, dynamic>>> categoryFoods = {
+    'Mala Xiang Guo': [
+      {'name': 'Mala Hotpot', 'price': 6.0, 'image': 'assets/images/mala.png'},
+    ],
+    'Biryani': [
+      {'name': 'Chicken Biryani', 'price': 8.0, 'image': 'assets/images/dan_pauk.png'},
+    ],
+    'Drinks': [
+      {'name': 'Ice Tea', 'price': 1.5, 'image': 'assets/images/iced_tea.png'},
+    ],
+    'Pizza': [
+      {'name': 'Pepperoni Pizza', 'price': 11.0, 'image': 'assets/images/pizza.png'},
+    ],
+    'Dessert': [
+      {'name': 'Chocolate Cake', 'price': 3.5, 'image': 'assets/images/ice_cream.png'},
+    ],
+  };
+
   @override
   void initState() {
     super.initState();
@@ -78,36 +96,12 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     final popularFoods = [
-      {
-        'name': 'Burger',
-        'price': 3.0,
-        'image': 'assets/images/burger.png',
-      },
-      {
-        'name': 'Spicy Noodles',
-        'price': 7.0,
-        'image': 'assets/images/noodles.png',
-      },
-      {
-        'name': 'Pizza',
-        'price': 10.0,
-        'image': 'assets/images/pizza.png',
-      },
-      {
-        'name': 'Mala Hotpot',
-        'price': 6.0,
-        'image': 'assets/images/mala.png',
-      },
-      {
-        'name': 'Ice Cream',
-        'price': 2.0,
-        'image': 'assets/images/ice_cream.png',
-      },
-      {
-        'name': 'Tea',
-        'price': 1.0,
-        'image': 'assets/images/tea.png',
-      },
+      {'name': 'Burger', 'price': 3.0, 'image': 'assets/images/burger.png'},
+      {'name': 'Spicy Noodles', 'price': 7.0, 'image': 'assets/images/noodles.png'},
+      {'name': 'Pizza', 'price': 10.0, 'image': 'assets/images/pizza.png'},
+      {'name': 'Mala Hotpot', 'price': 6.0, 'image': 'assets/images/mala.png'},
+      {'name': 'Ice Cream', 'price': 2.0, 'image': 'assets/images/ice_cream.png'},
+      {'name': 'Tea', 'price': 1.0, 'image': 'assets/images/tea.png'},
     ];
 
     return Scaffold(
@@ -116,15 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.pushNamed(context, '/search');
-            },
+            onPressed: () => Navigator.pushNamed(context, '/search'),
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.pushNamed(context, '/cart');
-            },
+            onPressed: () => Navigator.pushNamed(context, '/cart'),
           ),
         ],
       ),
@@ -158,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           Colors.black.withOpacity(0.3),
                           BlendMode.darken,
                         ),
-                        onError: (exception, stackTrace) => const AssetImage('assets/images/placeholder.png'),
                       ),
                     ),
                     child: Center(
@@ -179,9 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: SearchBar(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/search');
-                  },
+                  onTap: () => Navigator.pushNamed(context, '/search'),
                 ),
               ),
 
@@ -210,6 +197,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
+              // Show food list of selected category
+              if (_selectedCategoryIndex != -1)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(
+                        'Recommended for You',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 220,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categoryFoods[categories[_selectedCategoryIndex].name]?.length ?? 0,
+                        itemBuilder: (ctx, index) {
+                          final item = categoryFoods[categories[_selectedCategoryIndex].name]![index];
+                          return Container(
+                            width: 160,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            child: FoodCard(
+                              name: item['name'],
+                              price: item['price'],
+                              image: item['image'],
+                              isPopular: false,
+                              onTap: () {
+                                // TODO: Add navigation to food detail screen
+                              },
+                              fallbackImage: 'assets/images/placeholder.png',
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
               // Popular Foods
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -231,10 +257,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       price: popularFoods[index]['price'] as double,
                       image: popularFoods[index]['image'] as String,
                       isPopular: true,
-                      onTap: () {
-                        // Add navigation to food details if implemented
-                      },
-                      fallbackImage: 'assets/images/placeholder.png', // Updated to match pubspec.yaml
+                      onTap: () {},
+                      fallbackImage: 'assets/images/placeholder.png',
                     ),
                   ),
                 ),
@@ -258,9 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RestaurantScreen(restaurant: restaurants[index
-
-                        ]),
+                        builder: (context) => RestaurantScreen(restaurant: restaurants[index]),
                       ),
                     );
                   },
