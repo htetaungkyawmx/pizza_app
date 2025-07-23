@@ -12,7 +12,7 @@ class ApiService {
     return [
       Restaurant(
         id: '1',
-        name: 'Mala Shan House',
+        name: 'Mala Xiang Guo',
         description: 'Authentic Chinese spicy dishes',
         image: 'assets/images/mala_shan.png',
         rating: 4.5,
@@ -20,23 +20,23 @@ class ApiService {
         deliveryFee: 2.5,
         discount: 20,
         minOrder: 10.0,
-        tags: ['Mala Shan', 'Chinese'],
+        tags: ['Mala Xiang Guo', 'Chinese'],
       ),
       Restaurant(
         id: '2',
-        name: 'Burmese Bistro',
-        description: 'Traditional Dan Pauk and more',
+        name: 'Biryani',
+        description: 'Traditional Biryani and more',
         image: 'assets/images/dan_pauk.png',
         rating: 4.2,
         deliveryTime: '25-35 min',
         deliveryFee: 3.0,
         discount: 0,
         minOrder: 8.0,
-        tags: ['Dan Pauk', 'Burmese'],
+        tags: ['Biryani', 'Burmese'],
       ),
       Restaurant(
         id: '3',
-        name: 'Cool Drinks Cafe',
+        name: 'Cool Drinks',
         description: 'Refreshing cold beverages',
         image: 'assets/images/cold_drinks.png',
         rating: 4.8,
@@ -69,7 +69,7 @@ class ApiService {
       if (restaurantId == '2')
         FoodItem(
           id: '2',
-          name: 'Dan Pauk Curry',
+          name: 'Biryani Curry',
           description: 'Traditional Burmese curry',
           price: 7.50,
           image: 'assets/images/dan_pauk_curry.png',

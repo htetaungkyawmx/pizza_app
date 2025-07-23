@@ -64,15 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final restaurants = restaurantProvider.restaurants;
 
     final categories = [
-      Category(id: '1', name: 'Mala Shan', icon: Icons.restaurant_menu, image: 'assets/images/mala_shan.png'),
-      Category(id: '2', name: 'Dan Pauk', icon: Icons.rice_bowl, image: 'assets/images/dan_pauk.png'),
-      Category(id: '3', name: 'Cold Drinks', icon: Icons.local_drink, image: 'assets/images/cold_drinks.png'),
+      Category(id: '1', name: 'Mala Xiang Guo', icon: Icons.restaurant_menu, image: 'assets/images/mala_shan.png'),
+      Category(id: '2', name: 'Biryani', icon: Icons.rice_bowl, image: 'assets/images/dan_pauk.png'),
+      Category(id: '3', name: 'Drinks', icon: Icons.local_drink, image: 'assets/images/cold_drinks.png'),
       Category(id: '4', name: 'Pizza', icon: Icons.local_pizza, image: 'assets/images/pizza.png'),
       Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/dessert.png'),
     ];
 
     final promotions = [
-      {'text': '30% OFF Mala Shan dishes!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
+      {'text': '25% Off Mala Xiang Guo!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
       {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
       {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/iced_tea.png', 'color': Colors.blue[100]},
     ];
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'image': 'assets/images/ice_cream.png',
       },
       {
-        'name': 'Milk Tea',
+        'name': 'Tea',
         'price': 1500.0,
         'image': 'assets/images/tea.png',
       },

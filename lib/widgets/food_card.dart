@@ -57,7 +57,7 @@ class FoodCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      Text('${price.toStringAsFixed(0)} Ks'),
+                      Text('\$${price.toStringAsFixed(0)}'),
                     ],
                   ),
                 ),
