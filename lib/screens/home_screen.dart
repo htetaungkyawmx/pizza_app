@@ -80,32 +80,32 @@ class _HomeScreenState extends State<HomeScreen> {
     final popularFoods = [
       {
         'name': 'Burger',
-        'price': 3500.0,
+        'price': 3.5,
         'image': 'assets/images/burger.png',
       },
       {
         'name': 'Spicy Noodles',
-        'price': 3000.0,
+        'price': 7,
         'image': 'assets/images/noodles.png',
       },
       {
         'name': 'Pizza',
-        'price': 5000.0,
+        'price': 10,
         'image': 'assets/images/pizza.png',
       },
       {
         'name': 'Mala Hotpot',
-        'price': 6000.0,
+        'price': 6,
         'image': 'assets/images/mala.png',
       },
       {
         'name': 'Ice Cream',
-        'price': 2000.0,
+        'price': 2,
         'image': 'assets/images/ice_cream.png',
       },
       {
         'name': 'Tea',
-        'price': 1500.0,
+        'price': 1.5,
         'image': 'assets/images/tea.png',
       },
     ];
