@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:pizza_app/screens/recommended_screen.dart';
 import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_provider.dart';
@@ -189,9 +190,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     category: categories[index],
                     isSelected: _selectedCategoryIndex == index,
                     onTap: () {
-                      setState(() {
-                        _selectedCategoryIndex = index;
-                      });
+                      final selectedCategory = categories[index];
+                      final selectedFoods = categoryFoods[selectedCategory.name] ?? [];
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => RecommendedScreen(
+                            categoryName: selectedCategory.name,
+                            recommendedFoods: selectedFoods,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
