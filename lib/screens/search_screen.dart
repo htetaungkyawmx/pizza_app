@@ -63,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ? ListView.builder(
               itemCount: restaurants.length,
               itemBuilder: (ctx, index) =>
-                  RestaurantCard(restaurant: restaurants[index]),
+                  RestaurantCard(restaurant: restaurants[index], onTap: () {  },),
             )
                 : FutureBuilder<List<FoodItem>>(
               future: restaurantProvider.searchFoodItems(_query),

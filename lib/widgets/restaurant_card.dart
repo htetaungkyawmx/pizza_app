@@ -5,7 +5,7 @@ import '../screens/restaurant_screen.dart';
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantCard({Key? key, required this.restaurant, required Null Function() onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
