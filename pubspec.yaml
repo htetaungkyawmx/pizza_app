@@ -34,8 +34,7 @@ flutter:
     - assets/images/iced_tea.png
     - assets/images/placeholder.png
     - assets/images/burger.png
-    - assets/images/pizza.png
-    - assets/images/mala.png
     - assets/images/noodles.png
+    - assets/images/mala.png
     - assets/images/ice_cream.png
     - assets/images/tea.png

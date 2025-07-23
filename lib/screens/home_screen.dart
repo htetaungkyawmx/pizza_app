@@ -72,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     final promotions = [
-      {'text': '30% OFF Mala Shan dishes!', 'image': 'assets/images/promo.png', 'color': Colors.red[100]},
+      {'text': '30% OFF Mala Shan dishes!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
       {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
-      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/promo.png', 'color': Colors.blue[100]},
+      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/iced_tea.png', 'color': Colors.blue[100]},
     ];
 
     final popularFoods = [
@@ -158,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Colors.black.withOpacity(0.3),
                           BlendMode.darken,
                         ),
+                        onError: (exception, stackTrace) => const AssetImage('assets/images/placeholder.png'),
                       ),
                     ),
                     child: Center(
@@ -233,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         // Add navigation to food details if implemented
                       },
+                      fallbackImage: 'assets/images/placeholder.png', // Updated to match pubspec.yaml
                     ),
                   ),
                 ),
@@ -256,7 +258,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RestaurantScreen(restaurant: restaurants[index]),
+                        builder: (context) => RestaurantScreen(restaurant: restaurants[index
+
+                        ]),
                       ),
                     );
                   },

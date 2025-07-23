@@ -43,7 +43,7 @@ class RestaurantScreen extends StatelessWidget {
                     ),
                   ),
                 );
-              },
+              }, fallbackImage: '',
             ),
           );
         },

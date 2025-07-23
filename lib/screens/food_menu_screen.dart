@@ -29,7 +29,7 @@ class FoodMenuScreen extends StatelessWidget {
                   builder: (_) => FoodDetailScreen(foodItem: foodItem, restaurant: restaurant),
                 ),
               );
-            },
+            }, fallbackImage: '',
           );
         },
       ),

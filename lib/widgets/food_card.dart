@@ -6,6 +6,7 @@ class FoodCard extends StatelessWidget {
   final String image;
   final VoidCallback onTap;
   final bool isPopular;
+  final String fallbackImage;
 
   const FoodCard({
     super.key,
@@ -14,6 +15,7 @@ class FoodCard extends StatelessWidget {
     required this.image,
     required this.onTap,
     this.isPopular = false,
+    required this.fallbackImage,
   });
 
   @override
@@ -31,9 +33,15 @@ class FoodCard extends StatelessWidget {
                 Expanded(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                    child: Image.network(
+                    child: Image.asset(
                       image,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          fallbackImage,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -42,7 +50,12 @@ class FoodCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       const SizedBox(height: 4),
                       Text('${price.toStringAsFixed(0)} Ks'),
                     ],
@@ -51,7 +64,6 @@ class FoodCard extends StatelessWidget {
               ],
             ),
           ),
-
           if (isPopular)
             Positioned(
               top: 8,
