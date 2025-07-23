@@ -35,32 +35,32 @@ class HomeScreen extends StatelessWidget {
       {
         'name': 'Burger',
         'price': 3500.0,
-        'image': 'assets/images/popular/burger.png',
+        'image': 'assets/images/burger.png',
       },
       {
         'name': 'Spicy Noodles',
         'price': 3000.0,
-        'image': 'assets/images/popular/noodles.png',
+        'image': 'assets/images/noodles.png',
       },
       {
         'name': 'Pizza',
         'price': 5000.0,
-        'image': 'assets/images/popular/pizza.png',
+        'image': 'assets/images/pizza.png',
       },
       {
         'name': 'Mala Hotpot',
         'price': 6000.0,
-        'image': 'assets/images/popular/mala.png',
+        'image': 'assets/images/mala.png',
       },
       {
         'name': 'Ice Cream',
         'price': 2000.0,
-        'image': 'assets/images/popular/ice_cream.png',
+        'image': 'assets/images/ice_cream.png',
       },
       {
         'name': 'Milk Tea',
         'price': 1500.0,
-        'image': 'assets/images/popular/tea.png',
+        'image': 'assets/images/tea.png',
       },
     ];
 

@@ -21,7 +21,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/popular/
     - assets/images/mala_shan.png
     - assets/images/dan_pauk.png
     - assets/images/cold_drinks.png
@@ -34,3 +33,9 @@ flutter:
     - assets/images/dan_pauk_curry.png
     - assets/images/iced_tea.png
     - assets/images/placeholder.png
+    - assets/images/burger.png
+    - assets/images/pizza.png
+    - assets/images/mala.png
+    - assets/images/noodles.png
+    - assets/images/ice_cream.png
+    - assets/images/tea.png
