@@ -129,6 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Search Bar (moved above promotions)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SearchBar(
+                  onTap: () => Navigator.pushNamed(context, '/search'),
+                ),
+              ),
+
               // Promotions
               SizedBox(
                 height: 150,
@@ -162,14 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                ),
-              ),
-
-              // Search Bar
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: SearchBar(
-                  onTap: () => Navigator.pushNamed(context, '/search'),
                 ),
               ),
 
