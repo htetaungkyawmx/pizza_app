@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       {'name': 'Pepperoni Pizza', 'price': 11.0, 'image': 'assets/images/pizza.png'},
     ],
     'Dessert': [
-      {'name': 'Chocolate Cake', 'price': 3.5, 'image': 'assets/images/ice_cream.png'},
+      {'name': 'Chocolate Cake', 'price': 3.5, 'image': 'assets/images/sweet_treats.png'},
     ],
   };
 
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Category(id: '2', name: 'Biryani', icon: Icons.rice_bowl, image: 'assets/images/dan_pauk.png'),
       Category(id: '3', name: 'Drinks', icon: Icons.local_drink, image: 'assets/images/cold_drinks.png'),
       Category(id: '4', name: 'Pizza', icon: Icons.local_pizza, image: 'assets/images/pizza.png'),
-      Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/dessert.png'),
+      Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/berry_cake.png'),
     ];
 
     final promotions = [

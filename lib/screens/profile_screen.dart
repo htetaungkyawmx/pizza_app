@@ -46,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 32),
           const _SectionTitle(title: 'Perks for you'),
           const _ListTileRow(icon: Icons.card_giftcard, label: 'Vouchers'),
-          const _ListTileRow(icon: Icons.emoji_events, label: 'Panda rewards'),
+          const _ListTileRow(icon: Icons.emoji_events, label: 'Naraon rewards'),
           const _ListTileRow(icon: Icons.group_add_outlined, label: 'Invite friends'),
           const SizedBox(height: 24),
           const _SectionTitle(title: 'General'),
