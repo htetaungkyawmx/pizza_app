@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
+  final PageController _pageController = PageController();
+
   final Map<String, List<Map<String, dynamic>>> categoryFoods = {
     'Mala Xiang Guo': [
       {'name': 'Mala Hotpot', 'price': 6.0, 'image': 'assets/images/mala.png'},
@@ -43,6 +45,22 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
   };
 
+  final promotions = [
+    {'text': '25% Off Mala Xiang Guo!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
+    {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
+    {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/summer_drink.png', 'color': Colors.blue[100]},
+    {'text': '10% Off Spicy Noodles!', 'image': 'assets/images/noodles.png', 'color': Colors.deepOrangeAccent[100]},
+  ];
+
+  final popularFoods = [
+    {'name': 'Burger', 'price': 3.0, 'image': 'assets/images/burger.png'},
+    {'name': 'Spicy Noodles', 'price': 5.0, 'image': 'assets/images/noodles.png'},
+    {'name': 'Pizza', 'price': 10.0, 'image': 'assets/images/pizza.png'},
+    {'name': 'Mala Hotpot', 'price': 5.0, 'image': 'assets/images/mala.png'},
+    {'name': 'Ice Cream', 'price': 2.0, 'image': 'assets/images/ice_cream.png'},
+    {'name': 'Tea', 'price': 1.0, 'image': 'assets/images/tea.png'},
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _promoTimer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -70,10 +89,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startPromoAutoScroll() {
-    _promoTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _currentPromoIndex = (_currentPromoIndex + 1) % 3;
-      });
+    _promoTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_pageController.hasClients) {
+        final nextPage = (_currentPromoIndex + 1) % promotions.length;
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        setState(() => _currentPromoIndex = nextPage);
+      }
     });
   }
 
@@ -88,22 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Category(id: '3', name: 'Drinks', icon: Icons.local_drink, image: 'assets/images/cold_drinks.png'),
       Category(id: '4', name: 'Pizza', icon: Icons.local_pizza, image: 'assets/images/pizza.png'),
       Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/berry_cake.png'),
-    ];
-
-    final promotions = [
-      {'text': '25% Off Mala Xiang Guo!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
-      {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
-      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/summer_drink.png', 'color': Colors.blue[100]},
-      {'text': '10% Off Spicy Noodles!', 'image': 'assets/images/noodles.png', 'color': Colors.deepOrangeAccent[100]},
-    ];
-
-    final popularFoods = [
-      {'name': 'Burger', 'price': 3.0, 'image': 'assets/images/burger.png'},
-      {'name': 'Spicy Noodles', 'price': 5.0, 'image': 'assets/images/noodles.png'},
-      {'name': 'Pizza', 'price': 10.0, 'image': 'assets/images/pizza.png'},
-      {'name': 'Mala Hotpot', 'price': 5.0, 'image': 'assets/images/mala.png'},
-      {'name': 'Ice Cream', 'price': 2.0, 'image': 'assets/images/ice_cream.png'},
-      {'name': 'Tea', 'price': 1.0, 'image': 'assets/images/tea.png'},
     ];
 
     return Scaffold(
@@ -130,7 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search Bar (moved above promotions)
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: SearchBar(
@@ -138,12 +146,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Promotions
+              // Auto-moving Promotions
               SizedBox(
                 height: 150,
                 child: PageView.builder(
+                  controller: _pageController,
                   itemCount: promotions.length,
-                  controller: PageController(initialPage: _currentPromoIndex),
                   onPageChanged: (index) {
                     setState(() => _currentPromoIndex = index);
                   },
@@ -175,13 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // Categories
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
               SizedBox(
                 height: 105,
                 child: ListView.builder(
@@ -208,18 +209,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Show food list of selected category
+              // Selected Category Foods
               if (_selectedCategoryIndex != -1)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Text(
-                        '',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
                     SizedBox(
                       height: 220,
                       child: ListView.builder(
@@ -235,9 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               price: item['price'],
                               image: item['image'],
                               isPopular: false,
-                              onTap: () {
-                                // TODO: Add navigation to food detail screen
-                              },
+                              onTap: () {},
                               fallbackImage: 'assets/images/placeholder.png',
                             ),
                           );
