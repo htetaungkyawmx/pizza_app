@@ -93,14 +93,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final promotions = [
       {'text': '25% Off Mala Xiang Guo!', 'image': 'assets/images/mala_shan.png', 'color': Colors.red[100]},
       {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
-      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/iced_tea.png', 'color': Colors.blue[100]},
+      {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/summer_drink.png', 'color': Colors.blue[100]},
+      {'text': '10% Off Spicy Noodles!', 'image': 'assets/images/noodles.png', 'color': Colors.deepOrangeAccent[100]},
     ];
 
     final popularFoods = [
       {'name': 'Burger', 'price': 3.0, 'image': 'assets/images/burger.png'},
-      {'name': 'Spicy Noodles', 'price': 7.0, 'image': 'assets/images/noodles.png'},
+      {'name': 'Spicy Noodles', 'price': 5.0, 'image': 'assets/images/noodles.png'},
       {'name': 'Pizza', 'price': 10.0, 'image': 'assets/images/pizza.png'},
-      {'name': 'Mala Hotpot', 'price': 6.0, 'image': 'assets/images/mala.png'},
+      {'name': 'Mala Hotpot', 'price': 5.0, 'image': 'assets/images/mala.png'},
       {'name': 'Ice Cream', 'price': 2.0, 'image': 'assets/images/ice_cream.png'},
       {'name': 'Tea', 'price': 1.0, 'image': 'assets/images/tea.png'},
     ];
@@ -182,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(
-                height: 100,
+                height: 105,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
