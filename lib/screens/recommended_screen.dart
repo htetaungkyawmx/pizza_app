@@ -15,7 +15,7 @@ class RecommendedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recommended: $categoryName'),
+        title: Text(': $categoryName'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
