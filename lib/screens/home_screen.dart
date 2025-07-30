@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart' hide SearchBar;
-import 'package:pizza_app/screens/recommended_screen.dart';
-import 'package:provider/provider.dart';
-import '../models/restaurant.dart';
-import '../providers/restaurant_provider.dart';
-import '../models/category.dart';
-import '../widgets/category_card.dart';
-import '../widgets/restaurant_card.dart';
-import '../widgets/food_card.dart';
-import '../widgets/search_bar.dart';
-import '../screens/restaurant_screen.dart';
 import 'dart:async';
+import 'package:flutter/material.dart' hide SearchBar;
+import 'package:provider/provider.dart';
+
+import '../models/category.dart';
+import '../providers/restaurant_provider.dart';
+import '../screens/recommended_screen.dart';
+import '../screens/restaurant_screen.dart';
+import '../widgets/category_card.dart';
+import '../widgets/food_card.dart';
+import '../widgets/restaurant_card.dart';
+import '../widgets/search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -115,6 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
       Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/berry_cake.png'),
     ];
 
+    // 🟡 Filter restaurants based on selected category
+    final filteredRestaurants = _selectedCategoryIndex == -1
+        ? restaurants
+        : restaurants.where((restaurant) {
+      final selectedCategory = categories[_selectedCategoryIndex].name.toLowerCase();
+      return restaurant.tags.any((tag) => tag.toLowerCase() == selectedCategory);
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('음식앱'),
@@ -146,15 +154,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Auto-moving Promotions
+              // Promotions
               SizedBox(
                 height: 150,
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: promotions.length,
-                  onPageChanged: (index) {
-                    setState(() => _currentPromoIndex = index);
-                  },
+                  onPageChanged: (index) => setState(() => _currentPromoIndex = index),
                   itemBuilder: (ctx, index) => Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     decoration: BoxDecoration(
@@ -192,6 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     category: categories[index],
                     isSelected: _selectedCategoryIndex == index,
                     onTap: () {
+                      setState(() => _selectedCategoryIndex = index);
+
                       final selectedCategory = categories[index];
                       final selectedFoods = categoryFoods[selectedCategory.name] ?? [];
 
@@ -203,41 +211,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             recommendedFoods: selectedFoods,
                           ),
                         ),
-                      );
+                      ).then((_) {
+                        // Optional: reset selection after coming back
+                        setState(() => _selectedCategoryIndex = -1);
+                      });
                     },
                   ),
                 ),
               ),
-
-              // Selected Category Foods
-              if (_selectedCategoryIndex != -1)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 220,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categoryFoods[categories[_selectedCategoryIndex].name]?.length ?? 0,
-                        itemBuilder: (ctx, index) {
-                          final item = categoryFoods[categories[_selectedCategoryIndex].name]![index];
-                          return Container(
-                            width: 160,
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            child: FoodCard(
-                              name: item['name'],
-                              price: item['price'],
-                              image: item['image'],
-                              isPopular: false,
-                              onTap: () {},
-                              fallbackImage: 'assets/images/placeholder.png',
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
 
               // Popular Foods
               const Padding(
@@ -278,14 +259,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: restaurants.length,
+                itemCount: filteredRestaurants.length,
                 itemBuilder: (ctx, index) => RestaurantCard(
-                  restaurant: restaurants[index],
+                  restaurant: filteredRestaurants[index],
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RestaurantScreen(restaurant: restaurants[index]),
+                        builder: (context) => RestaurantScreen(restaurant: filteredRestaurants[index]),
                       ),
                     );
                   },
