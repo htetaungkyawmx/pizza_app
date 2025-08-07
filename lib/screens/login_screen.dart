@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'main_wrapper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,10 +8,13 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   String _phone = '';
   String _password = '';
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -25,18 +27,66 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _loginWithApple() {
-    // TODO: Add Apple login logic here
     print("Login with Apple");
   }
 
-  // void _loginWithFacebook() {
-  //   // TODO: Add Facebook login logic here
-  //   print("Login with Facebook");
-  // }
-
   void _loginWithEmail() {
-    // TODO: Add Email login screen or logic
     print("Login with Email");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    _scaleAnimation =
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInputField({
+    required String label,
+    required bool obscureText,
+    required FormFieldValidator<String> validator,
+    required FormFieldSetter<String> onSaved,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: TextFormField(
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          validator: validator,
+          onSaved: onSaved,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: const TextStyle(color: Colors.white70),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -45,15 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/login_bg.png',
-            fit: BoxFit.cover,
-          ),
-
-          Container(
-            color: Colors.black.withOpacity(0.5),
-          ),
-
+          Image.asset('assets/images/login_bg.png', fit: BoxFit.cover),
+          Container(color: Colors.black.withOpacity(0.5)),
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
@@ -68,22 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),
-
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white54),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
+                    _buildInputField(
+                      label: 'Phone Number',
+                      obscureText: false,
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -95,28 +127,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       onSaved: (value) => _phone = value?.trim() ?? '',
                     ),
-                    const SizedBox(height: 20),
-
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white54),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
+                    _buildInputField(
+                      label: 'Password',
                       obscureText: true,
-                      validator: (value) => value != null && value.length >= 6
+                      validator: (value) =>
+                      value != null && value.length >= 6
                           ? null
                           : 'Password must be at least 6 characters',
                       onSaved: (value) => _password = value ?? '',
                     ),
                     const SizedBox(height: 30),
-
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -136,9 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('Login'),
                       ),
                     ),
-
                     const SizedBox(height: 30),
-
                     const Row(
                       children: [
                         Expanded(child: Divider(color: Colors.white54)),
@@ -152,9 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Expanded(child: Divider(color: Colors.white54)),
                       ],
                     ),
-
                     const SizedBox(height: 20),
-
                     SocialLoginButton(
                       icon: Icons.apple,
                       text: "Sign in with Apple",
@@ -166,13 +182,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: "Sign in with Email",
                       onTap: _loginWithEmail,
                     ),
-                    // const SizedBox(height: 12),
-                    // SocialLoginButton(
-                    //   icon: Icons.facebook,
-                    //   text: "Sign in with Facebook",
-                    //   onTap: _loginWithFacebook,
-                    //   color: Colors.blueAccent,
-                    // ),
                   ],
                 ),
               ),
@@ -213,7 +222,7 @@ class SocialLoginButton extends StatelessWidget {
           ),
         ),
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Colors.white38),
+          side: const BorderSide(color: Colors.white38),
           backgroundColor: color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
