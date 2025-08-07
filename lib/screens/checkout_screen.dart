@@ -9,7 +9,20 @@ import '../services/location_service.dart';
 import 'order_status_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key, required Restaurant restaurant, required List<CartItem> items, required double subtotal, required double deliveryFee, required double total});
+  const CheckoutScreen({
+    super.key,
+    required this.restaurant,
+    required this.items,
+    required this.subtotal,
+    required this.deliveryFee,
+    required this.total,
+  });
+
+  final Restaurant restaurant;
+  final List<CartItem> items;
+  final double subtotal;
+  final double deliveryFee;
+  final double total;
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -35,10 +48,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final locationService = LocationService();
       final position = await locationService.getCurrentLocation();
-      final address = await locationService.getAddressFromCoordinates(position.latitude, position.longitude);
+      final address = await locationService.getAddressFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
       _addressController.text = address;
     } catch (e) {
-      // Ignore errors for now, keep user-provided address
+      // Ignore location error
     }
   }
 
@@ -47,6 +63,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _addressController.dispose();
     _phoneController.dispose();
     super.dispose();
+  }
+
+  Widget _getPaymentIcon(String method) {
+    switch (method) {
+      case 'Cash on Delivery':
+        return const Icon(Icons.money);
+      case 'Debit Card':
+        return const Icon(Icons.credit_card);
+      case 'Visa Card':
+        return const Icon(Icons.credit_card_rounded);
+      case 'PayPal':
+        return const Icon(Icons.account_balance_wallet);
+      default:
+        return const Icon(Icons.payment);
+    }
   }
 
   @override
@@ -107,10 +138,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               DropdownButtonFormField<String>(
                 value: _paymentMethod,
                 onChanged: (value) => setState(() => _paymentMethod = value!),
-                items: ['Cash on Delivery', 'Credit Card', 'PayPal']
-                    .map((method) => DropdownMenuItem(value: method, child: Text(method)))
-                    .toList(),
                 decoration: const InputDecoration(border: OutlineInputBorder()),
+                items: [
+                  'Cash on Delivery',
+                  'Debit Card',
+                  'Visa Card',
+                  'PayPal',
+                ].map((method) {
+                  return DropdownMenuItem(
+                    value: method,
+                    child: Row(
+                      children: [
+                        _getPaymentIcon(method),
+                        const SizedBox(width: 8),
+                        Text(method),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 24),
               Text('Order Summary', style: Theme.of(context).textTheme.titleLarge),
@@ -148,7 +193,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     if (!_formKey.currentState!.validate()) return;
                     setState(() => _isLoading = true);
                     try {
-                      final orderId = DateTime.now().toIso8601String(); // TODO: Replace with UUID
+                      final orderId = DateTime.now().toIso8601String();
                       userProvider.updateProfile(
                         phone: _phoneController.text,
                         address: _addressController.text,
@@ -166,7 +211,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         deliveryAddress: _addressController.text,
                         paymentMethod: _paymentMethod,
                       );
-                      // Simulate order placement
+
                       await Future.delayed(const Duration(seconds: 1));
                       cartProvider.clearCart();
                       Navigator.pushReplacement(
@@ -196,12 +241,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 }
 
-extension on Future<Restaurant?> {
-  get name => null;
-
-  get id => null;
-}
-
 extension on Future<double> {
   toStringAsFixed(int i) {}
+}
+
+extension on Future<Restaurant?> {
+  get id => null;
+
+  get name => null;
 }
