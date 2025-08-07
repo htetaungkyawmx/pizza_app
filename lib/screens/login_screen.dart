@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'main_wrapper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +22,21 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => MainWrapper()),
       );
     }
+  }
+
+  void _loginWithApple() {
+    // TODO: Add Apple login logic here
+    print("Login with Apple");
+  }
+
+  // void _loginWithFacebook() {
+  //   // TODO: Add Facebook login logic here
+  //   print("Login with Facebook");
+  // }
+
+  void _loginWithEmail() {
+    // TODO: Add Email login screen or logic
+    print("Login with Email");
   }
 
   @override
@@ -99,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           : 'Password must be at least 6 characters',
                       onSaved: (value) => _password = value ?? '',
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 30),
 
                     SizedBox(
                       width: double.infinity,
@@ -120,12 +136,89 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('Login'),
                       ),
                     ),
+
+                    const SizedBox(height: 30),
+
+                    const Row(
+                      children: [
+                        Expanded(child: Divider(color: Colors.white54)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: Colors.white54)),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    SocialLoginButton(
+                      icon: Icons.apple,
+                      text: "Sign in with Apple",
+                      onTap: _loginWithApple,
+                    ),
+                    const SizedBox(height: 12),
+                    SocialLoginButton(
+                      icon: Icons.mail,
+                      text: "Sign in with Email",
+                      onTap: _loginWithEmail,
+                    ),
+                    // const SizedBox(height: 12),
+                    // SocialLoginButton(
+                    //   icon: Icons.facebook,
+                    //   text: "Sign in with Facebook",
+                    //   onTap: _loginWithFacebook,
+                    //   color: Colors.blueAccent,
+                    // ),
                   ],
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SocialLoginButton extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final VoidCallback onTap;
+  final Color color;
+
+  const SocialLoginButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+    this.color = Colors.white24,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon, color: Colors.white),
+        label: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text(
+            text,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: Colors.white38),
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
       ),
     );
   }
