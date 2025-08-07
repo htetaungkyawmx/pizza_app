@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart'; // Make sure this path is correct
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  void _logout(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false, // Remove all previous routes
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
               const Text('박성운', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               GestureDetector(
-                onTap: () {}, // Add view profile navigation
+                onTap: () {},
                 child: const Text('View profile', style: TextStyle(color: Colors.grey)),
               ),
               const SizedBox(height: 16),
@@ -52,10 +61,28 @@ class ProfileScreen extends StatelessWidget {
           const _SectionTitle(title: 'General'),
           const _ListTileRow(icon: Icons.help_outline, label: 'Help center'),
           const _ListTileRow(icon: Icons.policy_outlined, label: 'Terms & policies'),
+
+          const SizedBox(height: 32),
+          ElevatedButton.icon(
+            onPressed: () => _logout(context),
+            icon: const Icon(Icons.logout),
+            label: const Text('Logout'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white.shade100,
+              foregroundColor: Colors.white.shade800,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+          ),
         ],
       ),
     );
   }
+}
+
+extension on Color {
+  get shade100 => null;
+
+  get shade800 => null;
 }
 
 class _ProfileTile extends StatelessWidget {

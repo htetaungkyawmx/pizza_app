@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'providers/cart_provider.dart';
 import 'providers/restaurant_provider.dart';
 import 'providers/user_provider.dart';
+
 import 'screens/main_wrapper.dart';
 import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/search_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
-  runApp(PizzaApp());
+  runApp(const PizzaApp());
 }
 
 class PizzaApp extends StatelessWidget {
+  const PizzaApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -61,12 +66,16 @@ class PizzaApp extends StatelessWidget {
             accentColor: Colors.redAccent,
           ).copyWith(secondary: Colors.redAccent),
         ),
-        home: MainWrapper(),
+
+        home: const LoginScreen(),
+
+        // You can add route to MainWrapper if you want to push after login
         routes: {
-          '/home': (ctx) => HomeScreen(),
-          '/profile': (ctx) => ProfileScreen(),
+          '/home': (ctx) => const HomeScreen(),
+          '/profile': (ctx) => const ProfileScreen(),
           '/cart': (ctx) => CartScreen(),
           '/search': (ctx) => SearchScreen(),
+          '/main': (ctx) => MainWrapper(),
         },
       ),
     );
