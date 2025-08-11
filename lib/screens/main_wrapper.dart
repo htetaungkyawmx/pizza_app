@@ -1,6 +1,6 @@
+import 'package:Naraon/screens/profile_screen.dart';
+import 'package:Naraon/screens/search_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:pizza_app/screens/profile_screen.dart';
-import 'package:pizza_app/screens/search_screen.dart';
 import 'cart_screen.dart';
 import 'home_screen.dart';
 

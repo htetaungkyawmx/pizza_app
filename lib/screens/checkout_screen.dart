@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pizza_app/models/cart_item.dart';
-import 'package:pizza_app/models/restaurant.dart';
 import 'package:provider/provider.dart';
+import '../models/cart_item.dart';
+import '../models/restaurant.dart';
 import '../providers/cart_provider.dart';
 import '../providers/user_provider.dart';
 import '../models/order.dart';

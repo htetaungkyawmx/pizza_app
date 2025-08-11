@@ -1,8 +1,8 @@
+import 'package:Naraon/screens/payments_screen.dart';
+import 'package:Naraon/screens/terms_policies_screen.dart';
+import 'package:Naraon/screens/vouchers_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pizza_app/screens/payments_screen.dart';
-import 'package:pizza_app/screens/terms_policies_screen.dart';
-import 'package:pizza_app/screens/vouchers_screen.dart';
 
 import 'addresses_screen.dart';
 import 'favourites_screen.dart';

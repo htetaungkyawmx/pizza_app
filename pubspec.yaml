@@ -1,4 +1,4 @@
-name: pizza_app
+name: Naraon
 description: A new Flutter pizza ordering app.
 version: 1.0.0+1
 
@@ -18,6 +18,12 @@ dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"
 
 flutter:
   uses-material-design: true
