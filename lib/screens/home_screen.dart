@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _errorMessage;
 
   final PageController _promoPageController = PageController();
-  final PageController _popularPageController = PageController(viewportFraction: 1.0); // Full width
+  final PageController _popularPageController = PageController(viewportFraction: 0.5);
 
   final Map<String, List<Map<String, dynamic>>> categoryFoods = {
     'Mala Xiang Guo': [
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (ctx, index) => Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(6),
                       image: DecorationImage(
                         image: AssetImage(promotions[index]['image'] as String),
                         fit: BoxFit.cover,
@@ -251,13 +251,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: _popularPageController,
                   itemCount: popularFoods.length,
                   onPageChanged: (index) => setState(() => _currentPopularIndex = index),
-                  itemBuilder: (ctx, index) => FoodCard(
-                    name: popularFoods[index]['name'] as String,
-                    price: popularFoods[index]['price'] as double,
-                    image: popularFoods[index]['image'] as String,
-                    isPopular: true,
-                    onTap: () {},
-                    fallbackImage: 'assets/images/placeholder.png',
+                  itemBuilder: (ctx, index) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: FoodCard(
+                      name: popularFoods[index]['name'] as String,
+                      price: popularFoods[index]['price'] as double,
+                      image: popularFoods[index]['image'] as String,
+                      isPopular: true,
+                      onTap: () {},
+                      fallbackImage: 'assets/images/placeholder.png',
+                    ),
                   ),
                 ),
               ),
