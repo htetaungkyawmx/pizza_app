@@ -33,18 +33,28 @@ class _HomeScreenState extends State<HomeScreen> {
   final Map<String, List<Map<String, dynamic>>> categoryFoods = {
     'Mala Xiang Guo': [
       {'name': 'Mala Hotpot', 'price': 6.0, 'image': 'assets/images/mala.png'},
+      {'name': 'Spicy Mala Stir Fry', 'price': 7.5, 'image': 'assets/images/Spicy_Mala.png'},
+      {'name': 'Mala Soup', 'price': 5.0, 'image': 'assets/images/mala_soup.png'},
     ],
     'Biryani': [
       {'name': 'Chicken Biryani', 'price': 8.0, 'image': 'assets/images/dan_pauk.png'},
+      {'name': 'Mutton Biryani', 'price': 10.0, 'image': 'assets/images/mutton_biryani.png'},
+      {'name': 'Veg Biryani', 'price': 6.5, 'image': 'assets/images/veg_biryani.png'},
     ],
     'Drinks': [
       {'name': 'Ice Tea', 'price': 1.5, 'image': 'assets/images/iced_tea.png'},
+      {'name': 'Lemonade', 'price': 2.0, 'image': 'assets/images/lemonade.png'},
+      {'name': 'Cold Coffee', 'price': 3.0, 'image': 'assets/images/cold_coffee.png'},
     ],
     'Pizza': [
       {'name': 'Pepperoni Pizza', 'price': 11.0, 'image': 'assets/images/pizza.png'},
+      {'name': 'Margherita Pizza', 'price': 9.0, 'image': 'assets/images/margherita.png'},
+      {'name': 'BBQ Chicken Pizza', 'price': 12.0, 'image': 'assets/images/bbq_chicken.png'},
     ],
     'Dessert': [
       {'name': 'Chocolate Cake', 'price': 3.5, 'image': 'assets/images/sweet_treats.png'},
+      {'name': 'Ice Cream Sundae', 'price': 4.0, 'image': 'assets/images/ice_creams.png'},
+      {'name': 'Fruit Tart', 'price': 3.0, 'image': 'assets/images/fruit_tart.png'},
     ],
   };
 

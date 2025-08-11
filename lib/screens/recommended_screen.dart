@@ -31,7 +31,7 @@ class RecommendedScreen extends StatelessWidget {
                 image: food['image'] as String,
                 isPopular: false,
                 onTap: () {
-                  // Optional: Navigate to detail screen
+                  // Optional: add navigation to food detail screen here
                 },
                 fallbackImage: 'assets/images/placeholder.png',
               ),
