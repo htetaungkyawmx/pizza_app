@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Make sure this path is correct
+import 'package:pizza_app/screens/payments_screen.dart';
+import 'addresses_screen.dart';
+import 'favourites_screen.dart';
+import 'login_screen.dart';
+import 'orders_screen.dart'; // Make sure this path is correct
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -8,8 +12,12 @@ class ProfileScreen extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false, // Remove all previous routes
+          (route) => false,
     );
+  }
+
+  void _navigateTo(BuildContext context, Widget screen) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }
 
   @override
@@ -51,11 +59,27 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 physics: const NeverScrollableScrollPhysics(),
-                children: const [
-                  _ProfileTile(icon: Icons.receipt_long, label: 'Orders'),
-                  _ProfileTile(icon: Icons.favorite_border, label: 'Favourites'),
-                  _ProfileTile(icon: Icons.payment, label: 'Payments'),
-                  _ProfileTile(icon: Icons.location_on_outlined, label: 'Addresses'),
+                children: [
+                  _ProfileTile(
+                    icon: Icons.receipt_long,
+                    label: 'Orders',
+                    onTap: () => _navigateTo(context, const OrdersScreen()),
+                  ),
+                  _ProfileTile(
+                    icon: Icons.favorite_border,
+                    label: 'Favourites',
+                    onTap: () => _navigateTo(context, const FavouritesScreen()),
+                  ),
+                  _ProfileTile(
+                    icon: Icons.payment,
+                    label: 'Payments',
+                    onTap: () => _navigateTo(context, const PaymentsScreen()),
+                  ),
+                  _ProfileTile(
+                    icon: Icons.location_on_outlined,
+                    label: 'Addresses',
+                    onTap: () => _navigateTo(context, const AddressesScreen()),
+                  ),
                 ],
               ),
             ],
@@ -96,8 +120,9 @@ class ProfileScreen extends StatelessWidget {
 class _ProfileTile extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _ProfileTile({required this.icon, required this.label});
+  const _ProfileTile({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +130,7 @@ class _ProfileTile extends StatelessWidget {
       color: Colors.grey.shade100,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
-          // TODO: Handle tap
-        },
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
