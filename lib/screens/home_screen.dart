@@ -53,6 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
     {'text': 'Free delivery on Burmese food!', 'image': 'assets/images/promo_burmese.png', 'color': Colors.orange[100]},
     {'text': 'Buy 1 Get 1 Cold Drinks!', 'image': 'assets/images/summer_drink.png', 'color': Colors.blue[100]},
     {'text': '10% Off Spicy Noodles!', 'image': 'assets/images/noodles.png', 'color': Colors.deepOrangeAccent[100]},
+    {'text': 'Buy 3 Get 1 Chicken Biryani!', 'image': 'assets/images/dan_pauk.png', 'color': Colors.deepPurpleAccent[100]},
+    {'text': '50% Off Fried Chicken!', 'image': 'assets/images/fried_chicken.png', 'color': Colors.yellowAccent[100]},
   ];
 
   final popularFoods = [
