@@ -2,7 +2,7 @@
 
 Welcome to Pizza APP, a user-friendly mobile application designed to bring your favorite pizzas and more right to your fingertips. This app offers a seamless experience to browse, select, and order delicious food with ease.
 
-Key Features
+Key Features:
 
 Intuitive User Interface: Navigate effortlessly through categories, menus, and order details.
 
