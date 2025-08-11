@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/restaurant.dart';
 import '../models/food_item.dart';
-import '../providers/cart_provider.dart';
 import '../services/api_service.dart';
 import '../widgets/food_card.dart';
 import 'food_detail_screen.dart';
@@ -10,11 +8,12 @@ import 'food_detail_screen.dart';
 class RestaurantScreen extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantScreen({required this.restaurant});
+  const RestaurantScreen({super.key, required this.restaurant});
 
   @override
   Widget build(BuildContext context) {
     final apiService = ApiService();
+
     return Scaffold(
       appBar: AppBar(title: Text(restaurant.name)),
       body: FutureBuilder<List<FoodItem>>(
@@ -26,6 +25,7 @@ class RestaurantScreen extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No items available'));
           }
+
           final foodItems = snapshot.data!;
           return ListView.builder(
             itemCount: foodItems.length,
@@ -33,6 +33,7 @@ class RestaurantScreen extends StatelessWidget {
               name: foodItems[index].name,
               price: foodItems[index].discountedPrice,
               image: foodItems[index].image,
+              fallbackImage: 'assets/images/placeholder.png',
               onTap: () {
                 Navigator.push(
                   context,
@@ -43,7 +44,7 @@ class RestaurantScreen extends StatelessWidget {
                     ),
                   ),
                 );
-              }, fallbackImage: '',
+              }, isPopular: false,
             ),
           );
         },

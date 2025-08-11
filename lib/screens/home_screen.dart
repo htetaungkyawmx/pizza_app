@@ -21,11 +21,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = -1;
   int _currentPromoIndex = 0;
+  int _currentPopularIndex = 0;
   Timer? _promoTimer;
+  Timer? _popularTimer;
   bool _isLoading = true;
   String? _errorMessage;
 
-  final PageController _pageController = PageController();
+  final PageController _promoPageController = PageController();
+  final PageController _popularPageController = PageController(viewportFraction: 1.0); // Full width
 
   final Map<String, List<Map<String, dynamic>>> categoryFoods = {
     'Mala Xiang Guo': [
@@ -66,12 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadData();
     _startPromoAutoScroll();
+    _startPopularAutoScroll();
   }
 
   @override
   void dispose() {
     _promoTimer?.cancel();
-    _pageController.dispose();
+    _popularTimer?.cancel();
+    _promoPageController.dispose();
+    _popularPageController.dispose();
     super.dispose();
   }
 
@@ -90,14 +96,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startPromoAutoScroll() {
     _promoTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (_pageController.hasClients) {
+      if (_promoPageController.hasClients) {
         final nextPage = (_currentPromoIndex + 1) % promotions.length;
-        _pageController.animateToPage(
+        _promoPageController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
         setState(() => _currentPromoIndex = nextPage);
+      }
+    });
+  }
+
+  void _startPopularAutoScroll() {
+    _popularTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_popularPageController.hasClients) {
+        final nextPage = (_currentPopularIndex + 1) % popularFoods.length;
+        _popularPageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        setState(() => _currentPopularIndex = nextPage);
       }
     });
   }
@@ -115,7 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Category(id: '5', name: 'Dessert', icon: Icons.cake, image: 'assets/images/berry_cake.png'),
     ];
 
-    // 🟡 Filter restaurants based on selected category
     final filteredRestaurants = _selectedCategoryIndex == -1
         ? restaurants
         : restaurants.where((restaurant) {
@@ -147,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Search bar
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: SearchBar(
@@ -154,11 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Promotions
+              // Promotions slider
               SizedBox(
                 height: 150,
                 child: PageView.builder(
-                  controller: _pageController,
+                  controller: _promoPageController,
                   itemCount: promotions.length,
                   onPageChanged: (index) => setState(() => _currentPromoIndex = index),
                   itemBuilder: (ctx, index) => Container(
@@ -199,10 +219,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     isSelected: _selectedCategoryIndex == index,
                     onTap: () {
                       setState(() => _selectedCategoryIndex = index);
-
                       final selectedCategory = categories[index];
                       final selectedFoods = categoryFoods[selectedCategory.name] ?? [];
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -212,7 +230,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ).then((_) {
-                        // Optional: reset selection after coming back
                         setState(() => _selectedCategoryIndex = -1);
                       });
                     },
@@ -220,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Popular Foods
+              // Popular Foods slider
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
@@ -229,30 +246,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(
-                height: 220,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
+                height: 230,
+                child: PageView.builder(
+                  controller: _popularPageController,
                   itemCount: popularFoods.length,
-                  itemBuilder: (ctx, index) => Container(
-                    width: 160,
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: FoodCard(
-                      name: popularFoods[index]['name'] as String,
-                      price: popularFoods[index]['price'] as double,
-                      image: popularFoods[index]['image'] as String,
-                      isPopular: true,
-                      onTap: () {},
-                      fallbackImage: 'assets/images/placeholder.png',
-                    ),
+                  onPageChanged: (index) => setState(() => _currentPopularIndex = index),
+                  itemBuilder: (ctx, index) => FoodCard(
+                    name: popularFoods[index]['name'] as String,
+                    price: popularFoods[index]['price'] as double,
+                    image: popularFoods[index]['image'] as String,
+                    isPopular: true,
+                    onTap: () {},
+                    fallbackImage: 'assets/images/placeholder.png',
                   ),
                 ),
               ),
 
-              // Restaurants
+              // Delicious foods
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
-                  '',
+                  'Delicious foods',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),

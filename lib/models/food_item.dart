@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'food_type.dart';
 
 class FoodItem {
@@ -28,7 +27,5 @@ class FoodItem {
     this.discount = 0,
   });
 
-  double get discountedPrice => price * (1 - discount);
-
-  get rating => null;
+  double get discountedPrice => price * (1 - discount / 100);
 }
