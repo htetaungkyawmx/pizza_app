@@ -1,9 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pizza_app/screens/payments_screen.dart';
+import 'package:pizza_app/screens/terms_policies_screen.dart';
+import 'package:pizza_app/screens/vouchers_screen.dart';
+
 import 'addresses_screen.dart';
 import 'favourites_screen.dart';
+import 'help_center_screen.dart';
+import 'invite_friends_screen.dart';
 import 'login_screen.dart';
-import 'orders_screen.dart'; // Make sure this path is correct
+import 'naraon_rewards_screen.dart';
+import 'orders_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -86,13 +93,33 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           const _SectionTitle(title: 'Perks for you'),
-          const _ListTileRow(icon: Icons.card_giftcard, label: 'Vouchers'),
-          const _ListTileRow(icon: Icons.emoji_events, label: 'Naraon rewards'),
-          const _ListTileRow(icon: Icons.group_add_outlined, label: 'Invite friends'),
+          _ListTileRow(
+            icon: Icons.card_giftcard,
+            label: 'Vouchers',
+            onTap: () => _navigateTo(context, const VouchersScreen()),
+          ),
+          _ListTileRow(
+            icon: Icons.emoji_events,
+            label: 'Naraon rewards',
+            onTap: () => _navigateTo(context, const NaraonRewardsScreen()),
+          ),
+          _ListTileRow(
+            icon: Icons.group_add_outlined,
+            label: 'Invite friends',
+            onTap: () => _navigateTo(context, const InviteFriendsScreen()),
+          ),
           const SizedBox(height: 24),
           const _SectionTitle(title: 'General'),
-          const _ListTileRow(icon: Icons.help_outline, label: 'Help center'),
-          const _ListTileRow(icon: Icons.policy_outlined, label: 'Terms & policies'),
+          _ListTileRow(
+            icon: Icons.help_outline,
+            label: 'Help center',
+            onTap: () => _navigateTo(context, const HelpCenterScreen()),
+          ),
+          _ListTileRow(
+            icon: Icons.policy_outlined,
+            label: 'Terms & policies',
+            onTap: () => _navigateTo(context, const TermsPoliciesScreen()),
+          ),
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: () => _logout(context),
@@ -151,8 +178,9 @@ class _ProfileTile extends StatelessWidget {
 class _ListTileRow extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _ListTileRow({required this.icon, required this.label});
+  const _ListTileRow({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +189,7 @@ class _ListTileRow extends StatelessWidget {
       leading: Icon(icon, color: Colors.grey.shade800),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // TODO: Handle tap
-      },
+      onTap: onTap,
     );
   }
 }
