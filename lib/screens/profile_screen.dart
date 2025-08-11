@@ -16,7 +16,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Account',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         centerTitle: false,
         backgroundColor: Colors.white,
         elevation: 1,
@@ -29,14 +32,19 @@ class ProfileScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('박성운', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text(
+                '박성운',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 4),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  // TODO: Add view profile action
+                },
                 child: const Text('View profile', style: TextStyle(color: Colors.grey)),
               ),
               const SizedBox(height: 16),
-              // Orders, Favourites, Payments, Addresses
+              // Orders, Favourites, Payments, Addresses grid
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -61,28 +69,28 @@ class ProfileScreen extends StatelessWidget {
           const _SectionTitle(title: 'General'),
           const _ListTileRow(icon: Icons.help_outline, label: 'Help center'),
           const _ListTileRow(icon: Icons.policy_outlined, label: 'Terms & policies'),
-
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: () => _logout(context),
-            icon: const Icon(Icons.logout),
-            label: const Text('Logout'),
+            icon: const Icon(Icons.logout, color: Colors.redAccent),
+            label: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.redAccent),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.shade100,
-              foregroundColor: Colors.white.shade800,
+              backgroundColor: Colors.white,
+              side: const BorderSide(color: Colors.redAccent),
               padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 0,
             ),
           ),
         ],
       ),
     );
   }
-}
-
-extension on Color {
-  get shade100 => null;
-
-  get shade800 => null;
 }
 
 class _ProfileTile extends StatelessWidget {
@@ -97,7 +105,9 @@ class _ProfileTile extends StatelessWidget {
       color: Colors.grey.shade100,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          // TODO: Handle tap
+        },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -128,7 +138,9 @@ class _ListTileRow extends StatelessWidget {
       leading: Icon(icon, color: Colors.grey.shade800),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
+      onTap: () {
+        // TODO: Handle tap
+      },
     );
   }
 }
