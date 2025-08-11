@@ -6,28 +6,36 @@ Welcome to Pizza APP project! Here are some screenshots and images to showcase f
 
 ## Screenshots
 
-![Login Screen](images/repo/Login.png)
+![Login Screen](assets/images/repo/Login.png)
 
-![Category Selection](images/repo/2.png)
+![Category Selection](assets/images/repo/2.png)
 
-![Category Selection](images/repo/3.png)
+![Category Selection](assets/images/repo/3.png)
 
-![Category Selection](images/repo/4.png)
+![Category Selection](assets/images/repo/4.png)
 
-![Category Selection](images/repo/5.png)
+![Category Selection](assets/images/repo/5.png)
 
-![Category Selection](images/repo/6.png)
+![Category Selection](assets/images/repo/6.png)
 
-![Food Details](images/repo/7.png)
+![Food Details](assets/images/repo/7.png)
 
-![Profile Details](images/repo/8.png)
+![Profile Details](assets/images/repo/8.png)
 
-![Orders Details](images/repo/9.png)
+![Orders Details](assets/images/repo/9.png)
 
-![Payments Details](images/repo/10.png)
+![Payments Details](assets/images/repo/10.png)
 
-![Addresses Details](images/repo/11.png)
+![Addresses Details](assets/images/repo/11.png)
 
-![Addresses Details](images/repo/12.png)
+![Addresses Details](assets/images/repo/12.png)
+
+![Naraon Rewards Details](assets/images/repo/13.png)
+
+![Invite Friends Details](assets/images/repo/14.png)
+
+![Help Center Details](assets/images/repo/15.png)
+
+![Terms & Policy Details](assets/images/repo/16.png)
 
 ---
